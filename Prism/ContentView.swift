@@ -11,6 +11,10 @@ struct ContentView: View {
     @State private var viewModel = ContentViewModel()
     @State private var showQuitAlert: Bool = false
 
+    private var appVersion: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.1"
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             switch viewModel.currentView {
@@ -50,7 +54,7 @@ struct ContentView: View {
             providerListView
             footerView
         }
-        .padding(8)
+        .padding(12)
     }
 
     private var headerView: some View {
@@ -142,7 +146,7 @@ struct ContentView: View {
     private var footerView: some View {
         HStack {
             Spacer()
-            Text("Prism v1.0.0")
+            Text("Prism v\(appVersion)")
                 .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundStyle(.tertiary)

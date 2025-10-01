@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Prism is a macOS 14.0+ menu bar application for switching Claude Code API providers with one click. It modifies `~/.claude/settings.json` to switch between different API endpoints (e.g., Anthropic Official, 智谱AI) while preserving all other configuration.
+Prism is a macOS 14.0+ menu bar application for switching Claude Code API providers with one click. It modifies `~/.claude/settings.json` to switch between different API endpoints (e.g., Anthropic Official, Zhipu AI, z.ai, Moonshot AI) while preserving all other configuration.
 
 ## Build Commands
 
@@ -25,13 +25,14 @@ xcodebuild -project Prism.xcodeproj -scheme Prism -configuration Debug build 2>&
 ### Data Flow
 
 1. **App Launch** → `AppDelegate.applicationDidFinishLaunching`
-   - `StatusBarController.shared.setup()` creates menu bar icon and NSPopover
-   - `ConfigImportService.shared.importExistingConfigurationIfNeeded()` detects existing Claude Code config and auto-imports matching providers
+   - Uses `MenuBarExtra` (not custom NSPopover) with `.window` style
+   - `ConfigImportService.shared.importExistingConfigurationIfNeeded()` detects existing Claude Code config and auto-imports matching providers (delayed 0.5s)
 
-2. **User Interaction** → `ContentView`
-   - Shows "默认" (Default) row + user-added providers
-   - User clicks "Activate" on a provider → `ProviderStore.activateProvider()` → `ConfigManager.updateEnvVariables()`
-   - User adds/edits provider → `AddEditProviderView` → `ProviderStore.addProvider()/updateProvider()`
+2. **User Interaction** → `ContentView` with `ContentViewModel`
+   - Shows "Default" row + user-added providers
+   - User clicks provider row → `ContentViewModel.activateProvider()` → `ProviderStore.activateProvider()` → `ConfigManager.updateEnvVariables()`
+   - User adds/edits provider → Navigation to `AddEditProviderView` (not sheet-based)
+   - Navigation state managed by `ContentViewModel.currentView` enum (.main/.add/.edit)
 
 3. **Data Persistence**
    - User providers: `ProviderStore` → UserDefaults (key: "saved_providers")
@@ -57,42 +58,60 @@ var providers: [Provider] {
 
 **Do NOT use**: Traditional `didSet` pattern - it won't trigger SwiftUI updates with @Observable.
 
-### Provider Identity
+### Provider Identity and Icon Management
 
 `Provider.id` must be encoded/decoded in Codable implementation. Each Provider has:
 - `id: UUID` - Must persist across app launches (explicitly encoded/decoded)
-- `name: String`
+- `name: String` - User-customizable, no automatic renaming
+- `icon: String` - Asset name (ClaudeLogo, ZhipuLogo, ZaiLogo, MoonshotLogo, OtherLogo)
 - `envVariables: [String: String]` - Contains 5 keys: ANTHROPIC_BASE_URL, ANTHROPIC_AUTH_TOKEN, ANTHROPIC_DEFAULT_HAIKU_MODEL, ANTHROPIC_DEFAULT_SONNET_MODEL, ANTHROPIC_DEFAULT_OPUS_MODEL
 - `isActive: Bool` - Only one provider can be active at a time
 
-### Sheet Data Passing Pattern
+**Icon Inference**: Icons are inferred from BASE_URL using `ProviderStore.inferIcon()`:
+- `bigmodel.cn` → ZhipuLogo
+- `z.ai` → ZaiLogo
+- `moonshot.cn` → MoonshotLogo
+- `anthropic.com` → ClaudeLogo
+- Others → OtherLogo
 
-For editing providers, use the `item` variant of `.sheet()`:
+**Do NOT** use provider name to determine icon or provider type. Always use BASE_URL pattern matching.
+
+### Navigation Pattern (Not Sheet-Based)
+
+The app uses custom navigation with `ContentViewModel.currentView`:
 
 ```swift
-.sheet(item: $editingProvider) { provider in
-    AddEditProviderView(provider: provider, onSave: { ... })
+enum AppView {
+    case main
+    case add
+    case edit(Provider)
 }
 ```
 
-**Do NOT use** `.sheet(isPresented:)` with conditional logic inside - it causes timing issues where the provider data becomes nil.
+When editing, `AddEditProviderView` receives a `Provider` and must preserve its `id`, `isActive`, and `icon` properties:
+
+```swift
+// Editing: preserve id, isActive, and icon
+Provider(
+    id: existingProvider.id,
+    name: newName,
+    envVariables: newEnvVariables,
+    icon: existingProvider.icon,
+    isActive: existingProvider.isActive
+)
+```
+
+**Critical**: Provider has two init methods:
+1. `init(name:envVariables:icon:isActive:)` - Creates new UUID (for adding)
+2. `init(id:name:envVariables:icon:isActive:)` - Preserves UUID (for editing)
 
 ### Default Provider Logic
 
-The "默认" (Default) row is always shown at the top of the provider list. It's considered active when:
+The "Default" row is always shown at the top. It's considered active when:
 - Claude Code config has no `ANTHROPIC_BASE_URL` OR
 - Claude Code config has no `ANTHROPIC_AUTH_TOKEN`
 
-This is checked via `isDefaultActive` computed property in ContentView.
-
-### Custom NSPopover Implementation
-
-The app uses a custom `StatusBarController` with `NSPopover` (not `MenuBarExtra`) for better focus control. This prevents the popup from closing when users interact with text fields or menus.
-
-Key adaptations:
-- macOS 14+ uses automatic rounded corners
-- Window styling with `.floating` level and transparent titlebar
-- `NSHostingController` wraps SwiftUI ContentView
+This is checked via `ContentViewModel.isDefaultActive` computed property.
 
 ## JSON Encoding Requirements
 
@@ -107,11 +126,13 @@ This prevents unwanted `\/` escaping in URLs.
 ## Configuration Import Logic
 
 At app launch, `ConfigImportService` checks existing Claude Code config:
-1. If `ANTHROPIC_BASE_URL` matches a template (e.g., 智谱AI's `https://open.bigmodel.cn/api/anthropic`), auto-import with template name
-2. If URL doesn't match any template, auto-import as "其它" (Other)
+1. If `ANTHROPIC_BASE_URL` matches a template (e.g., Zhipu AI's `https://open.bigmodel.cn/api/anthropic`), auto-import with template name and icon
+2. If URL doesn't match any template, auto-import as "Other" with OtherLogo
 3. If provider already exists (matching both URL and token), activate it instead of duplicating
 
-Template matching includes validation beyond URL matching (e.g., token format checks for 智谱AI).
+Template matching includes validation beyond URL matching (e.g., token format checks for Zhipu AI).
+
+**No Data Migration**: The app does NOT migrate or rename existing provider data. User-defined names and icons are preserved as-is.
 
 ## File Authorship
 
@@ -121,7 +142,9 @@ When creating new files, use author signature: `okooo5km(十里)`
 
 To add a new provider template:
 
-1. Add to `ProviderTemplate.allTemplates` in Models.swift:
+1. Add logo SVG to `Prism/Assets.xcassets/` with "template" rendering intent
+
+2. Add to `ProviderTemplate.allTemplates` in Models.swift:
 ```swift
 static let newProvider = ProviderTemplate(
     name: "Provider Name",
@@ -131,8 +154,39 @@ static let newProvider = ProviderTemplate(
         "ANTHROPIC_DEFAULT_HAIKU_MODEL": "model-name",
         "ANTHROPIC_DEFAULT_SONNET_MODEL": "model-name",
         "ANTHROPIC_DEFAULT_OPUS_MODEL": "model-name"
-    ]
+    ],
+    icon: "NewProviderLogo"
 )
 ```
 
-2. Add validation logic in `ConfigImportService.isValidProviderForTemplate()` if the provider requires special token format or URL pattern validation.
+3. Add URL pattern to `ProviderStore.inferIcon()` for automatic icon detection
+
+4. (Optional) Add validation logic in `ConfigImportService.isValidProviderForTemplate()` if the provider requires special token format or URL pattern validation.
+
+## UI Components
+
+### DetailCardView Pattern
+
+Form fields use custom card-based components:
+- `DetailTextFieldCardView` - Standard text input with icon and label
+- `DetailSecureFieldCardView` - Secure password input with icon and label
+
+Each `EnvKey` enum case must provide:
+- `displayName: String` - Human-readable label
+- `systemImage: String` - SF Symbol icon name
+- `placeholder: String` - Placeholder text
+
+### Picker with Asset Images
+
+When using Picker with custom images, use `Label` (not `HStack`):
+```swift
+Label {
+    Text(template.name)
+} icon: {
+    Image(template.icon)
+        .resizable()
+        .aspectRatio(contentMode: .fit)
+}
+```
+
+macOS Picker menu items don't support arbitrary View layouts.

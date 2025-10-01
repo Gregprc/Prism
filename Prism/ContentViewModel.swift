@@ -61,7 +61,7 @@ class ContentViewModel {
 
     func activateDefault() {
         providerStore.deactivateAllProviders()
-        clearConfigEnv()
+        clearManagedEnv()
     }
 
     func addProvider(_ provider: Provider) {
@@ -71,10 +71,24 @@ class ContentViewModel {
 
     func updateProvider(_ provider: Provider) {
         providerStore.updateProvider(provider)
+
+        // If editing the currently active provider, sync changes to config file
+        if provider.isActive {
+            print("📝 Updated provider is active, syncing to config file")
+            applyProviderToConfig(provider)
+        }
     }
 
     func deleteProvider(_ provider: Provider) {
+        let wasActive = provider.isActive
+
         providerStore.deleteProvider(provider)
+
+        // If deleted provider was active, activate default (clear env)
+        if wasActive {
+            print("🗑️ Deleted active provider, activating default")
+            activateDefault()
+        }
     }
 
     // MARK: - Private Helper Methods
@@ -85,10 +99,10 @@ class ContentViewModel {
         }
     }
 
-    private func clearConfigEnv() {
-        let success = configManager.updateEnvVariables([:])
+    private func clearManagedEnv() {
+        let success = configManager.removeManagedEnvVariables()
         if !success {
-            print("Failed to clear configuration")
+            print("Failed to clear managed env variables")
         }
     }
 }

@@ -18,17 +18,8 @@ class ConfigManager {
         backupPath = homeDirectory.appendingPathComponent(".claude/settings.json.backup").path
     }
 
-    struct ClaudeConfig: Codable {
-        var env: [String: String]?
-
-        init() {
-            self.env = nil
-        }
-
-        init(env: [String: String]? = nil) {
-            self.env = env
-        }
-    }
+    // Use raw JSON dictionary to preserve all config keys
+    typealias ClaudeConfig = [String: Any]
 
     func readConfig() -> ClaudeConfig? {
         guard FileManager.default.fileExists(atPath: claudeConfigPath) else {
@@ -37,7 +28,7 @@ class ConfigManager {
 
         do {
             let data = try Data(contentsOf: URL(fileURLWithPath: claudeConfigPath))
-            let config = try JSONDecoder().decode(ClaudeConfig.self, from: data)
+            let config = try JSONSerialization.jsonObject(with: data) as? [String: Any]
             return config
         } catch {
             print("Failed to read Claude config: \(error)")
@@ -50,9 +41,10 @@ class ConfigManager {
         createBackup()
 
         do {
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = [.prettyPrinted, .withoutEscapingSlashes]
-            let data = try encoder.encode(config)
+            let data = try JSONSerialization.data(
+                withJSONObject: config,
+                options: [.prettyPrinted, .withoutEscapingSlashes]
+            )
 
             // Ensure directory exists
             let directory = (claudeConfigPath as NSString).deletingLastPathComponent
@@ -77,13 +69,69 @@ class ConfigManager {
             print("  \(key): \(displayValue)")
         }
 
-        var config = readConfig() ?? ClaudeConfig()
-        config.env = envVars
+        // Read existing config to preserve all fields
+        var config = readConfig() ?? [:]
+
+        // Get existing env or create new one
+        var existingEnv = (config["env"] as? [String: String]) ?? [:]
+
+        // Define the keys we manage
+        let managedKeys: Set<String> = [
+            "ANTHROPIC_BASE_URL",
+            "ANTHROPIC_AUTH_TOKEN",
+            "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+            "ANTHROPIC_DEFAULT_SONNET_MODEL",
+            "ANTHROPIC_DEFAULT_OPUS_MODEL"
+        ]
+
+        // Remove our managed keys from existing env (we'll set them fresh)
+        for key in managedKeys {
+            existingEnv.removeValue(forKey: key)
+        }
+
+        // Merge: keep non-managed env vars, add our managed ones
+        for (key, value) in envVars {
+            existingEnv[key] = value
+        }
+
+        // Update config with merged env
+        config["env"] = existingEnv
+
         return writeConfig(config)
     }
 
     func getCurrentEnvVariables() -> [String: String] {
-        return readConfig()?.env ?? [:]
+        guard let config = readConfig() else { return [:] }
+        return (config["env"] as? [String: String]) ?? [:]
+    }
+
+    func removeManagedEnvVariables() -> Bool {
+        // Read existing config to preserve all fields
+        var config = readConfig() ?? [:]
+
+        // Get existing env or create new one
+        var existingEnv = (config["env"] as? [String: String]) ?? [:]
+
+        // Define the keys we manage
+        let managedKeys: Set<String> = [
+            "ANTHROPIC_BASE_URL",
+            "ANTHROPIC_AUTH_TOKEN",
+            "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+            "ANTHROPIC_DEFAULT_SONNET_MODEL",
+            "ANTHROPIC_DEFAULT_OPUS_MODEL"
+        ]
+
+        // Remove only our managed keys, keep others
+        for key in managedKeys {
+            existingEnv.removeValue(forKey: key)
+        }
+
+        print("🧹 Removing managed env variables, keeping other env vars")
+
+        // Update config with cleaned env
+        config["env"] = existingEnv
+
+        return writeConfig(config)
     }
 
     private func createBackup() {

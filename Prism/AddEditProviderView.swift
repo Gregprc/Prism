@@ -15,6 +15,19 @@ struct AddEditProviderView: View {
     @State private var providerName: String
     @State private var selectedTemplate: ProviderTemplate? = .zhipuAI
     @State private var envVariables: [String: String]
+
+    private var isSaveDisabled: Bool {
+        // Provider name is required
+        if providerName.isEmpty {
+            return true
+        }
+
+        // BASE_URL and AUTH_TOKEN are required
+        let baseURL = envVariables["ANTHROPIC_BASE_URL"] ?? ""
+        let authToken = envVariables["ANTHROPIC_AUTH_TOKEN"] ?? ""
+
+        return baseURL.isEmpty || authToken.isEmpty
+    }
     
     init(provider: Provider?, onSave: @escaping (Provider) -> Void, onCancel: @escaping () -> Void) {
         self.provider = provider
@@ -51,22 +64,35 @@ struct AddEditProviderView: View {
                 Spacer()
                 
                 Button(action: {
+                    // Filter out empty MODEL env variables
+                    var cleanedEnvVariables = envVariables
+                    let modelKeys = [
+                        "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+                        "ANTHROPIC_DEFAULT_SONNET_MODEL",
+                        "ANTHROPIC_DEFAULT_OPUS_MODEL"
+                    ]
+                    for key in modelKeys {
+                        if let value = cleanedEnvVariables[key], value.isEmpty {
+                            cleanedEnvVariables.removeValue(forKey: key)
+                        }
+                    }
+
                     let newProvider: Provider
                     if let existingProvider = provider {
                         // Editing: preserve id, isActive, and icon
                         newProvider = Provider(
                             id: existingProvider.id,
                             name: providerName.isEmpty ? "Untitled Provider" : providerName,
-                            envVariables: envVariables,
+                            envVariables: cleanedEnvVariables,
                             icon: existingProvider.icon,
                             isActive: existingProvider.isActive
                         )
                     } else {
                         // Adding: infer icon from BASE_URL
-                        let inferredIcon = ProviderStore.inferIcon(from: envVariables)
+                        let inferredIcon = ProviderStore.inferIcon(from: cleanedEnvVariables)
                         newProvider = Provider(
                             name: providerName.isEmpty ? "Untitled Provider" : providerName,
-                            envVariables: envVariables,
+                            envVariables: cleanedEnvVariables,
                             icon: inferredIcon,
                             isActive: false
                         )
@@ -77,7 +103,7 @@ struct AddEditProviderView: View {
                         .font(.caption)
                 })
                 .buttonStyle(.gradient(configuration: .primary))
-                .disabled(providerName.isEmpty)
+                .disabled(isSaveDisabled)
             }
             .padding(.horizontal, 12)
             .padding(.top, 12)
@@ -133,6 +159,7 @@ struct AddEditProviderView: View {
                                 title: envKey.displayName,
                                 systemImage: envKey.systemImage,
                                 placeholder: envKey.placeholder,
+                                required: true,
                                 value: binding(for: envKey)
                             )
                         } else {
@@ -140,6 +167,7 @@ struct AddEditProviderView: View {
                                 title: envKey.displayName,
                                 systemImage: envKey.systemImage,
                                 placeholder: envKey.placeholder,
+                                required: envKey == .baseURL,
                                 value: binding(for: envKey)
                             )
                         }

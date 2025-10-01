@@ -103,11 +103,7 @@ class ProviderStore {
         var updatedProviders = providers
         updatedProviders.removeAll { $0.id == provider.id }
 
-        // If we deleted the active provider, activate the first one if available
-        if provider.isActive && !updatedProviders.isEmpty {
-            updatedProviders[0].isActive = true
-        }
-
+        // Don't auto-activate another provider - let ContentViewModel handle it
         providers = updatedProviders
     }
 

@@ -95,13 +95,13 @@ struct ProviderTemplate: Hashable, Equatable {
     )
     
     static let otherAI = ProviderTemplate(
-        name: "Your AI",
+        name: "Custom AI",
         envVariables: [
             "ANTHROPIC_BASE_URL": "",
             "ANTHROPIC_AUTH_TOKEN": "",
-            "ANTHROPIC_DEFAULT_HAIKU_MODEL": "haiku",
-            "ANTHROPIC_DEFAULT_SONNET_MODEL": "sonnet",
-            "ANTHROPIC_DEFAULT_OPUS_MODEL": "opus"
+            "ANTHROPIC_DEFAULT_HAIKU_MODEL": "",
+            "ANTHROPIC_DEFAULT_SONNET_MODEL": "",
+            "ANTHROPIC_DEFAULT_OPUS_MODEL": ""
         ],
         icon: "OtherLogo"
     )
