@@ -61,23 +61,23 @@ xcodebuild -project Prism.xcodeproj -scheme Prism -configuration Debug build 2>&
 
 **App Sandbox**: Prism runs in a sandboxed environment with `com.apple.security.files.user-selected.read-write` entitlement.
 
-**SandboxAccessManager**: Manages persistent access to `~/.claude/settings.json` using Security-Scoped Bookmarks:
+**SandboxAccessManager**: Manages persistent access to `~/.claude` directory using Security-Scoped Bookmarks:
 
 1. **Permission Check** (App Launch):
-   - Attempts to restore bookmark from UserDefaults
-   - Validates bookmark and tests file accessibility
-   - Falls back to direct path check for non-sandboxed environments
+   - Uses `resolveBookmark()` private method to restore bookmark from UserDefaults
+   - Validates bookmark staleness and tests directory accessibility
+   - `performAccessCheck()` performs the actual check without side effects
 
 2. **Permission Request** (No Access):
    - Shows independent `PermissionWindow` (NSWindow with floating level)
    - Opens NSOpenPanel with `showsHiddenFiles = true`
-   - If `~/.claude` exists: Opens directly in that directory
-   - If `~/.claude` doesn't exist: Opens home directory with hidden files visible
-   - User selects `settings.json` file
+   - Opens home directory with hidden files visible (NSOpenPanel cannot open hidden directories directly)
+   - User selects `.claude` directory
    - Creates and saves Security-Scoped Bookmark to UserDefaults
 
 3. **Secure File Access**:
-   - All `ConfigManager` operations use `SandboxAccessManager.withSecureAccess { url in }`
+   - All `ConfigManager` operations use `SandboxAccessManager.withSecureAccess { directoryURL in }`
+   - Uses `resolveBookmark()` to get directory URL (eliminates code duplication)
    - Automatically calls `startAccessingSecurityScopedResource()` / `stopAccessingSecurityScopedResource()`
    - Ensures proper resource cleanup with defer statements
 

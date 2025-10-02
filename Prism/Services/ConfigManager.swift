@@ -9,15 +9,7 @@ import Foundation
 
 @Observable
 class ConfigManager {
-    private let claudeConfigPath: String
-    private let backupPath: String
     private let sandboxManager = SandboxAccessManager.shared
-
-    init() {
-        let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
-        claudeConfigPath = homeDirectory.appendingPathComponent(".claude/settings.json").path
-        backupPath = homeDirectory.appendingPathComponent(".claude/settings.json.backup").path
-    }
 
     // Use raw JSON dictionary to preserve all config keys
     typealias ClaudeConfig = [String: Any]

@@ -97,7 +97,7 @@ struct ProviderTemplate: Hashable, Equatable {
     static let streamLakeAI = ProviderTemplate(
         name: String(localized: "StreamLake"),
         envVariables: [
-            "ANTHROPIC_BASE_URL": "https://wanqing.streamlakeapi.com/api/gateway/v1/endpoints/ep-xxx-xxxxxxx/claude-code-proxy",
+            "ANTHROPIC_BASE_URL": "",
             "ANTHROPIC_AUTH_TOKEN": "",
             "ANTHROPIC_DEFAULT_HAIKU_MODEL": "KAT-Coder",
             "ANTHROPIC_DEFAULT_SONNET_MODEL": "KAT-Coder",

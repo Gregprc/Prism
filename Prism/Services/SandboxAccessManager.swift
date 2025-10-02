@@ -15,56 +15,64 @@ class SandboxAccessManager {
     static let shared = SandboxAccessManager()
 
     private let bookmarkKey = "claude_settings_bookmark"
-    private let settingsPath = FileManager.default.homeDirectoryForCurrentUser
-        .appendingPathComponent(".claude/settings.json")
 
     var hasAccess: Bool = false
     var isRequestingAccess: Bool = false
 
     private init() {
-        _ = checkAccess()
+        self.hasAccess = performAccessCheck()
     }
 
     /// Check if we have access to settings.json
     func checkAccess() -> Bool {
+        hasAccess = performAccessCheck()
+        return hasAccess
+    }
+
+    /// Resolve security-scoped bookmark from UserDefaults
+    private func resolveBookmark() throws -> (url: URL, isStale: Bool) {
+        guard let bookmark = UserDefaults.standard.data(forKey: bookmarkKey) else {
+            throw NSError(
+                domain: "SandboxAccessManager",
+                code: 404,
+                userInfo: [NSLocalizedDescriptionKey: "Bookmark not found"]
+            )
+        }
+
+        var isStale = false
+        let url = try URL(
+            resolvingBookmarkData: bookmark,
+            options: .withSecurityScope,
+            relativeTo: nil,
+            bookmarkDataIsStale: &isStale
+        )
+
+        return (url, isStale)
+    }
+
+    /// Perform access check without updating hasAccess property
+    private func performAccessCheck() -> Bool {
         // Try to restore from bookmark first
-        if let bookmark = UserDefaults.standard.data(forKey: bookmarkKey) {
-            do {
-                var isStale = false
-                let url = try URL(
-                    resolvingBookmarkData: bookmark,
-                    options: .withSecurityScope,
-                    relativeTo: nil,
-                    bookmarkDataIsStale: &isStale
-                )
+        do {
+            let (url, isStale) = try resolveBookmark()
 
-                if isStale {
-                    print("⚠️ Bookmark is stale, need to re-request access")
-                    hasAccess = false
-                    return false
-                }
-
-                // Test if we can actually access the file
-                if url.startAccessingSecurityScopedResource() {
-                    defer { url.stopAccessingSecurityScopedResource() }
-
-                    if FileManager.default.isReadableFile(atPath: url.path) {
-                        hasAccess = true
-                        return true
-                    }
-                }
-            } catch {
-                print("❌ Failed to resolve bookmark: \(error)")
+            if isStale {
+                print("⚠️ Bookmark is stale, need to re-request access")
+                return false
             }
+
+            // Test if we can actually access the directory
+            if url.startAccessingSecurityScopedResource() {
+                defer { url.stopAccessingSecurityScopedResource() }
+
+                if FileManager.default.isReadableFile(atPath: url.path) {
+                    return true
+                }
+            }
+        } catch {
+            // Bookmark doesn't exist or failed to resolve
         }
 
-        // Check if file exists and is accessible (non-sandbox mode)
-        if FileManager.default.isReadableFile(atPath: settingsPath.path) {
-            hasAccess = true
-            return true
-        }
-
-        hasAccess = false
         return false
     }
 
@@ -127,31 +135,20 @@ class SandboxAccessManager {
         }
     }
 
-    /// Execute a block with security-scoped access to settings.json
+    /// Execute a block with security-scoped access to .claude directory
     func withSecureAccess<T>(_ block: (URL) throws -> T) throws -> T {
-        if let bookmark = UserDefaults.standard.data(forKey: bookmarkKey) {
-            var isStale = false
-            let url = try URL(
-                resolvingBookmarkData: bookmark,
-                options: .withSecurityScope,
-                relativeTo: nil,
-                bookmarkDataIsStale: &isStale
+        let (url, _) = try resolveBookmark()
+
+        guard url.startAccessingSecurityScopedResource() else {
+            throw NSError(
+                domain: "SandboxAccessManager",
+                code: 1,
+                userInfo: [NSLocalizedDescriptionKey: "Failed to access security-scoped resource"]
             )
-
-            guard url.startAccessingSecurityScopedResource() else {
-                throw NSError(
-                    domain: "SandboxAccessManager",
-                    code: 1,
-                    userInfo: [NSLocalizedDescriptionKey: "Failed to access security-scoped resource"]
-                )
-            }
-
-            defer { url.stopAccessingSecurityScopedResource() }
-            return try block(url)
         }
 
-        // Fallback to direct path (non-sandbox mode)
-        return try block(settingsPath)
+        defer { url.stopAccessingSecurityScopedResource() }
+        return try block(url)
     }
 
     /// Clear saved bookmark (for testing/reset)
