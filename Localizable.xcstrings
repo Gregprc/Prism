@@ -445,8 +445,22 @@
         }
       }
     },
-    "No conflict detected." : {
-      "comment" : "No token conflict message"
+    "No conflict detected" : {
+      "comment" : "No token conflict message",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未检测到冲突"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未檢測到衝突"
+          }
+        }
+      }
     },
     "No items" : {
       "comment" : "Empty picker message",
@@ -603,7 +617,21 @@
       }
     },
     "Save Anyway" : {
-
+      "comment" : "Save despite warning button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仍然保存"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仍然儲存"
+          }
+        }
+      }
     },
     "Set" : {
       "comment" : "Set button for optional fields",
@@ -657,14 +685,56 @@
         }
       }
     },
-    "This token is already used by '%@' with a different URL. This might be intentional if you're using multiple endpoints with the same credentials." : {
-      "comment" : "Duplicate token with different URL message"
-    },
-    "This token is already used by '%@' with the same URL. Using the same token with identical configuration may cause conflicts." : {
-      "comment" : "Duplicate token with same URL message"
-    },
     "Token Already in Use" : {
-      "comment" : "Duplicate token warning title"
+      "comment" : "Duplicate token alert title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API 密钥已被使用"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API 密鑰已被使用"
+          }
+        }
+      }
+    },
+    "Token used by '%@' with different URL" : {
+      "comment" : "Duplicate token with different URL warning",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API 密钥已被「%@」使用（不同端点）"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API 密鑰已被「%@」使用（不同端點）"
+          }
+        }
+      }
+    },
+    "Token used by '%@' with same URL" : {
+      "comment" : "Duplicate token with same URL warning",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API 密钥已被「%@」使用（相同端点）"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API 密鑰已被「%@」使用（相同端點）"
+          }
+        }
+      }
     },
     "Value" : {
       "comment" : "Value field label for metadata",

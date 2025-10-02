@@ -162,19 +162,19 @@ struct AddEditProviderView: View {
     private func showDuplicateAlertWindow(for result: TokenCheckResult) {
         let alert = NSAlert()
         alert.alertStyle = .warning
-        alert.messageText = NSLocalizedString("Token Already in Use", comment: "")
+        alert.messageText = NSLocalizedString("Token Already in Use", comment: "Duplicate token alert title")
 
         switch result {
         case .duplicateWithSameURL(let provider):
-            alert.informativeText = String(format: NSLocalizedString("This token is already used by '%@' with the same URL. Using the same token with identical configuration may cause conflicts.", comment: ""), provider.name)
+            alert.informativeText = String(format: NSLocalizedString("Token used by '%@' with same URL", comment: "Duplicate token with same URL warning"), provider.name)
         case .duplicateWithDifferentURL(let provider):
-            alert.informativeText = String(format: NSLocalizedString("This token is already used by '%@' with a different URL. This might be intentional if you're using multiple endpoints with the same credentials.", comment: ""), provider.name)
+            alert.informativeText = String(format: NSLocalizedString("Token used by '%@' with different URL", comment: "Duplicate token with different URL warning"), provider.name)
         case .unique:
-            alert.informativeText = NSLocalizedString("No conflict detected.", comment: "")
+            alert.informativeText = NSLocalizedString("No conflict detected", comment: "No token conflict message")
         }
 
         alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
-        alert.addButton(withTitle: NSLocalizedString("Save Anyway", comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("Save Anyway", comment: "Save despite warning button"))
 
         let response = alert.runModal()
         if response == .alertSecondButtonReturn {
