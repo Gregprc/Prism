@@ -11,10 +11,13 @@ struct AddEditProviderView: View {
     let provider: Provider?
     let onSave: (Provider) -> Void
     let onCancel: () -> Void
-    
+    let onCheckDuplicate: (String, String, UUID?) -> TokenCheckResult
+
     @State private var providerName: String
     @State private var selectedTemplate: ProviderTemplate?
     @State private var envVariables: [String: String]
+    @State private var showDuplicateAlert = false
+    @State private var duplicateCheckResult: TokenCheckResult?
 
     private var isSaveDisabled: Bool {
         // Provider name is required
@@ -29,10 +32,16 @@ struct AddEditProviderView: View {
         return baseURL.isEmpty || authToken.isEmpty
     }
     
-    init(provider: Provider?, onSave: @escaping (Provider) -> Void, onCancel: @escaping () -> Void) {
+    init(
+        provider: Provider?,
+        onSave: @escaping (Provider) -> Void,
+        onCancel: @escaping () -> Void,
+        onCheckDuplicate: @escaping (String, String, UUID?) -> TokenCheckResult
+    ) {
         self.provider = provider
         self.onSave = onSave
         self.onCancel = onCancel
+        self.onCheckDuplicate = onCheckDuplicate
 
         print("🔧 AddEditProviderView init - provider: \(provider?.name ?? "nil")")
 
@@ -75,40 +84,22 @@ struct AddEditProviderView: View {
                 Spacer()
                 
                 Button(action: {
-                    // Filter out empty MODEL env variables
-                    var cleanedEnvVariables = envVariables
-                    let modelKeys = [
-                        "ANTHROPIC_DEFAULT_HAIKU_MODEL",
-                        "ANTHROPIC_DEFAULT_SONNET_MODEL",
-                        "ANTHROPIC_DEFAULT_OPUS_MODEL"
-                    ]
-                    for key in modelKeys {
-                        if let value = cleanedEnvVariables[key], value.isEmpty {
-                            cleanedEnvVariables.removeValue(forKey: key)
-                        }
-                    }
+                    // Check token duplicate before saving
+                    let token = envVariables["ANTHROPIC_AUTH_TOKEN"] ?? ""
+                    let baseURL = envVariables["ANTHROPIC_BASE_URL"] ?? ""
+                    let excludingID = provider?.id
 
-                    let newProvider: Provider
-                    if let existingProvider = provider {
-                        // Editing: preserve id, isActive, and icon
-                        newProvider = Provider(
-                            id: existingProvider.id,
-                            name: providerName.isEmpty ? "Untitled Provider" : providerName,
-                            envVariables: cleanedEnvVariables,
-                            icon: existingProvider.icon,
-                            isActive: existingProvider.isActive
-                        )
-                    } else {
-                        // Adding: infer icon from BASE_URL
-                        let inferredIcon = ProviderStore.inferIcon(from: cleanedEnvVariables)
-                        newProvider = Provider(
-                            name: providerName.isEmpty ? "Untitled Provider" : providerName,
-                            envVariables: cleanedEnvVariables,
-                            icon: inferredIcon,
-                            isActive: false
-                        )
+                    let checkResult = onCheckDuplicate(token, baseURL, excludingID)
+
+                    switch checkResult {
+                    case .unique:
+                        // No duplicate, proceed with save
+                        saveProvider()
+                    case .duplicateWithSameURL, .duplicateWithDifferentURL:
+                        // Show alert
+                        duplicateCheckResult = checkResult
+                        showDuplicateAlert = true
                     }
-                    onSave(newProvider)
                 }, label: {
                     Label("Save", systemImage: "checkmark.circle.fill")
                         .font(.caption)
@@ -169,8 +160,62 @@ struct AddEditProviderView: View {
                 .padding(.bottom, 12)
             }
         }
+        .alert("Token Already in Use", isPresented: $showDuplicateAlert) {
+            Button("Cancel", role: .cancel) {}
+            Button("Save Anyway") {
+                saveProvider()
+            }
+        } message: {
+            if let result = duplicateCheckResult {
+                switch result {
+                case .duplicateWithSameURL(let provider):
+                    Text("This token is already used by '\(provider.name)' with the same URL. Using the same token with identical configuration may cause conflicts.")
+                case .duplicateWithDifferentURL(let provider):
+                    Text("This token is already used by '\(provider.name)' with a different URL. This might be intentional if you're using multiple endpoints with the same credentials.")
+                case .unique:
+                    Text("No conflict detected.")
+                }
+            }
+        }
     }
-    
+
+    private func saveProvider() {
+        // Filter out empty MODEL env variables
+        var cleanedEnvVariables = envVariables
+        let modelKeys = [
+            "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+            "ANTHROPIC_DEFAULT_SONNET_MODEL",
+            "ANTHROPIC_DEFAULT_OPUS_MODEL"
+        ]
+        for key in modelKeys {
+            if let value = cleanedEnvVariables[key], value.isEmpty {
+                cleanedEnvVariables.removeValue(forKey: key)
+            }
+        }
+
+        let newProvider: Provider
+        if let existingProvider = provider {
+            // Editing: preserve id, isActive, and icon
+            newProvider = Provider(
+                id: existingProvider.id,
+                name: providerName.isEmpty ? "Untitled Provider" : providerName,
+                envVariables: cleanedEnvVariables,
+                icon: existingProvider.icon,
+                isActive: existingProvider.isActive
+            )
+        } else {
+            // Adding: infer icon from BASE_URL
+            let inferredIcon = ProviderStore.inferIcon(from: cleanedEnvVariables)
+            newProvider = Provider(
+                name: providerName.isEmpty ? "Untitled Provider" : providerName,
+                envVariables: cleanedEnvVariables,
+                icon: inferredIcon,
+                isActive: false
+            )
+        }
+        onSave(newProvider)
+    }
+
     private func binding(for envKey: EnvKey) -> Binding<String> {
         Binding<String>(
             get: {
@@ -191,6 +236,9 @@ struct AddEditProviderView: View {
         },
         onCancel: {
             print("Cancelled")
+        },
+        onCheckDuplicate: { token, baseURL, excludingID in
+            return .unique
         }
     )
 }

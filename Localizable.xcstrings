@@ -445,6 +445,9 @@
         }
       }
     },
+    "No conflict detected." : {
+
+    },
     "No items" : {
       "comment" : "Empty picker message",
       "localizations" : {
@@ -599,6 +602,9 @@
         }
       }
     },
+    "Save Anyway" : {
+
+    },
     "Set" : {
       "comment" : "Set button for optional fields",
       "localizations" : {
@@ -633,6 +639,32 @@
           }
         }
       }
+    },
+    "StreamLake" : {
+      "comment" : "StreamLake provider name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "StreamLake"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "StreamLake"
+          }
+        }
+      }
+    },
+    "This token is already used by '%@' with a different URL. This might be intentional if you're using multiple endpoints with the same credentials." : {
+
+    },
+    "This token is already used by '%@' with the same URL. Using the same token with identical configuration may cause conflicts." : {
+
+    },
+    "Token Already in Use" : {
+
     },
     "Value" : {
       "comment" : "Value field label for metadata",

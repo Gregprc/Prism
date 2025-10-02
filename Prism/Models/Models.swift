@@ -94,6 +94,18 @@ struct ProviderTemplate: Hashable, Equatable {
         icon: "MoonshotLogo"
     )
     
+    static let streamLakeAI = ProviderTemplate(
+        name: String(localized: "StreamLake"),
+        envVariables: [
+            "ANTHROPIC_BASE_URL": "https://wanqing.streamlakeapi.com/api/gateway/v1/endpoints/ep-xxx-xxxxxxx/claude-code-proxy",
+            "ANTHROPIC_AUTH_TOKEN": "",
+            "ANTHROPIC_DEFAULT_HAIKU_MODEL": "KAT-Coder",
+            "ANTHROPIC_DEFAULT_SONNET_MODEL": "KAT-Coder",
+            "ANTHROPIC_DEFAULT_OPUS_MODEL": "KAT-Coder"
+        ],
+        icon: "StreamLakeLogo"
+    )
+    
     static let otherAI = ProviderTemplate(
         name: String(localized: "Custom AI"),
         envVariables: [
@@ -110,6 +122,7 @@ struct ProviderTemplate: Hashable, Equatable {
         zhipuAI,
         zai,
         moonshotAI,
+        streamLakeAI,
         otherAI
     ]
 }
@@ -118,6 +131,12 @@ extension Provider {
     static func fromTemplate(_ template: ProviderTemplate) -> Provider {
         return Provider(name: template.name, envVariables: template.envVariables, icon: template.icon)
     }
+}
+
+enum TokenCheckResult {
+    case unique
+    case duplicateWithDifferentURL(Provider)
+    case duplicateWithSameURL(Provider)
 }
 
 enum EnvKey: String, CaseIterable, Identifiable {

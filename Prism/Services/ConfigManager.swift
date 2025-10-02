@@ -65,7 +65,7 @@ class ConfigManager {
         print("🔧 Writing env variables to Claude config:")
         for (key, value) in envVars {
             let displayValue = key == "ANTHROPIC_AUTH_TOKEN" ?
-                "\(String(value.prefix(10)))..." : value
+                String(repeating: "*", count: min(value.count, 20)) : value
             print("  \(key): \(displayValue)")
         }
 
@@ -103,6 +103,21 @@ class ConfigManager {
     func getCurrentEnvVariables() -> [String: String] {
         guard let config = readConfig() else { return [:] }
         return (config["env"] as? [String: String]) ?? [:]
+    }
+
+    func debugPrintCurrentEnvVariables() {
+        let envVars = getCurrentEnvVariables()
+        if envVars.isEmpty {
+            print("🔍 No environment variables found")
+            return
+        }
+
+        print("🔍 Current Claude Code env variables:")
+        for (key, value) in envVars {
+            let displayValue = key == "ANTHROPIC_AUTH_TOKEN" ?
+                String(repeating: "*", count: min(value.count, 20)) : value
+            print("  \(key): \(displayValue)")
+        }
     }
 
     func removeManagedEnvVariables() -> Bool {

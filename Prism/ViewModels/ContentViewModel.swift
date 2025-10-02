@@ -12,15 +12,27 @@ class ContentViewModel {
     // App Navigation State
     var currentView: AppView = .main
 
-    enum AppView {
+    enum AppView: Equatable {
         case main
         case add
         case edit(Provider)
+
+        static func == (lhs: AppView, rhs: AppView) -> Bool {
+            switch (lhs, rhs) {
+            case (.main, .main), (.add, .add):
+                return true
+            case (.edit(let lhsProvider), .edit(let rhsProvider)):
+                return lhsProvider.id == rhsProvider.id
+            default:
+                return false
+            }
+        }
     }
 
     // Dependencies
     private let configManager = ConfigManager()
     private let providerStore = ProviderStore.shared
+    private let configImportService = ConfigImportService.shared
 
     init() {}
 
@@ -66,15 +78,18 @@ class ContentViewModel {
 
     func addProvider(_ provider: Provider) {
         providerStore.addProvider(provider)
-        applyProviderToConfig(provider)
+        // Don't update config file - only save data
     }
 
     func updateProvider(_ provider: Provider) {
+        // Check if this is the active provider before updating
+        let wasActive = provider.isActive
+
         providerStore.updateProvider(provider)
 
-        // If editing the currently active provider, sync changes to config file
-        if provider.isActive {
-            print("📝 Updated provider is active, syncing to config file")
+        // If editing the currently active provider, sync changes to config file immediately
+        if wasActive {
+            print("📝 Updated active provider, syncing to config file")
             applyProviderToConfig(provider)
         }
     }
@@ -89,6 +104,14 @@ class ContentViewModel {
             print("🗑️ Deleted active provider, activating default")
             activateDefault()
         }
+    }
+
+    func checkTokenDuplicate(token: String, baseURL: String, excludingID: UUID?) -> TokenCheckResult {
+        providerStore.checkTokenDuplicate(token: token, baseURL: baseURL, excludingID: excludingID)
+    }
+
+    func syncConfigurationState() {
+        _ = configImportService.syncConfigurationState()
     }
 
     // MARK: - Private Helper Methods

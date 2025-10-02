@@ -26,16 +26,32 @@ xcodebuild -project Prism.xcodeproj -scheme Prism -configuration Debug build 2>&
 
 1. **App Launch** → `AppDelegate.applicationDidFinishLaunching`
    - Uses `MenuBarExtra` (not custom NSPopover) with `.window` style
-   - `ConfigImportService.shared.importExistingConfigurationIfNeeded()` detects existing Claude Code config and auto-imports matching providers (delayed 0.5s)
+   - `ConfigImportService.shared.syncConfigurationOnStartup()` performs three-phase validation (delayed 0.5s):
+     - Phase 1: Check activeProviderID, validate token consistency
+     - Phase 2: If inconsistent, match token across all providers
+     - Phase 3: If no match, create new provider from template
 
-2. **User Interaction** → `ContentView` with `ContentViewModel`
+2. **Menu Opens** → `ContentView.onAppear`
+   - `ConfigImportService.shared.syncConfigurationState()` detects external config changes
+   - Updates activation state if config file was modified outside the app
+
+3. **User Interaction** → `ContentView` with `ContentViewModel`
    - Shows "Default" row + user-added providers
-   - User clicks provider row → `ContentViewModel.activateProvider()` → `ProviderStore.activateProvider()` → `ConfigManager.updateEnvVariables()`
-   - User adds/edits provider → Navigation to `AddEditProviderView` (not sheet-based)
+   - User clicks provider row → `ContentViewModel.activateProvider()` → `ProviderStore.activateProvider()` → saves activeProviderID → `ConfigManager.updateEnvVariables()`
+   - User adds provider → No auto-activation, no config file update (only saves data)
+   - User edits non-active provider → Only updates data, no config file update
+   - User edits active provider → Updates data AND syncs to config file immediately
+   - User deletes active provider → Restores "Default" and clears config file
    - Navigation state managed by `ContentViewModel.currentView` enum (.main/.add/.edit)
 
-3. **Data Persistence**
+4. **Token Validation** → `AddEditProviderView`
+   - Before saving, checks token duplication via `ProviderStore.checkTokenDuplicate()`
+   - Distinguishes between same-URL and different-URL duplicates
+   - Shows warning Alert, allows user to proceed or cancel
+
+5. **Data Persistence**
    - User providers: `ProviderStore` → UserDefaults (key: "saved_providers")
+   - Active provider ID: `ProviderStore` → UserDefaults (key: "active_provider_id")
    - Claude Code config: `ConfigManager` → `~/.claude/settings.json` (only `env` key)
 
 ### State Management with @Observable
@@ -75,6 +91,40 @@ var providers: [Provider] {
 - Others → OtherLogo
 
 **Do NOT** use provider name to determine icon or provider type. Always use BASE_URL pattern matching.
+
+### Provider Management Logic
+
+**Active Provider Tracking**: The app persists `activeProviderID` (UUID string) in UserDefaults to track which provider is currently selected.
+
+**Configuration Synchronization Strategy**:
+
+1. **App Startup Sync** (`syncConfigurationOnStartup`):
+   - Phase 1: Verify activeProviderID matches config file token
+   - Phase 2: If mismatch, search all providers for matching token
+   - Phase 3: If no match, create new provider from template matching config
+
+2. **Menu Open Sync** (`syncConfigurationState`):
+   - Detect external config file changes (e.g., manual edits, Claude Code updates)
+   - Match config token against all providers
+   - Update activation state or create new provider if needed
+
+**Provider Operations**:
+
+- **Add Provider**: Only saves data to UserDefaults, does NOT activate or update config file
+- **Edit Non-Active Provider**: Only updates local data
+- **Edit Active Provider**: Updates data AND immediately syncs to config file (user expects changes to take effect)
+- **Switch Provider**: Updates activeProviderID and config file
+- **Delete Active Provider**: Restores "Default" (clears config env variables)
+- **Delete Non-Active Provider**: Only removes from local data
+
+**Token Duplication Check** (`ProviderStore.checkTokenDuplicate`):
+
+Returns `TokenCheckResult` enum:
+- `.unique` - No duplicate found
+- `.duplicateWithSameURL(Provider)` - Same token + same URL (likely error)
+- `.duplicateWithDifferentURL(Provider)` - Same token + different URL (might be intentional for multi-endpoint setups)
+
+UI shows appropriate warnings and allows user to proceed or cancel.
 
 ### Navigation Pattern (Not Sheet-Based)
 

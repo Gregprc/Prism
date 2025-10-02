@@ -16,7 +16,9 @@ struct HorizontalTemplatePicker: View {
             HStack(spacing: 8) {
                 ForEach(templates, id: \.name) { template in
                     Button(action: {
-                        selection = template
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            selection = template
+                        }
                     }) {
                         HStack(spacing: 6) {
                             Image(template.icon)

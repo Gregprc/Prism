@@ -17,35 +17,59 @@ struct ContentView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            switch viewModel.currentView {
-            case .main:
+            ZStack {
                 mainView
-            case .add:
-                AddEditProviderView(
-                    provider: nil,
-                    onSave: { savedProvider in
-                        viewModel.addProvider(savedProvider)
-                        viewModel.backToMain()
-                    },
-                    onCancel: {
-                        viewModel.backToMain()
-                    }
-                )
-            case .edit(let provider):
-                AddEditProviderView(
-                    provider: provider,
-                    onSave: { savedProvider in
-                        viewModel.updateProvider(savedProvider)
-                        viewModel.backToMain()
-                    },
-                    onCancel: {
-                        viewModel.backToMain()
-                    }
-                )
+                    .opacity(viewModel.currentView == .main ? 1 : 0)
+                    .scaleEffect(viewModel.currentView == .main ? 1 : 0.95)
+                    .animation(.easeInOut(duration: 0.3), value: viewModel.currentView)
+
+                if viewModel.currentView == .add {
+                    AddEditProviderView(
+                        provider: nil,
+                        onSave: { savedProvider in
+                            viewModel.addProvider(savedProvider)
+                            viewModel.backToMain()
+                        },
+                        onCancel: {
+                            viewModel.backToMain()
+                        },
+                        onCheckDuplicate: { token, baseURL, excludingID in
+                            viewModel.checkTokenDuplicate(token: token, baseURL: baseURL, excludingID: excludingID)
+                        }
+                    )
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .trailing).combined(with: .opacity),
+                        removal: .move(edge: .trailing).combined(with: .opacity)
+                    ))
+                }
+
+                if case .edit(let provider) = viewModel.currentView {
+                    AddEditProviderView(
+                        provider: provider,
+                        onSave: { savedProvider in
+                            viewModel.updateProvider(savedProvider)
+                            viewModel.backToMain()
+                        },
+                        onCancel: {
+                            viewModel.backToMain()
+                        },
+                        onCheckDuplicate: { token, baseURL, excludingID in
+                            viewModel.checkTokenDuplicate(token: token, baseURL: baseURL, excludingID: excludingID)
+                        }
+                    )
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .trailing).combined(with: .opacity),
+                        removal: .move(edge: .trailing).combined(with: .opacity)
+                    ))
+                }
             }
         }
         .background(.clear)
         .frame(width: 360)
+        .animation(.easeInOut(duration: 0.35), value: viewModel.currentView)
+        .onAppear {
+            viewModel.syncConfigurationState()
+        }
     }
 
     private var mainView: some View {
@@ -65,18 +89,34 @@ struct ContentView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 32, height: 32)
+                        .scaleEffect(1.0)
+                        .transition(.asymmetric(
+                            insertion: .scale(scale: 0.7).combined(with: .opacity),
+                            removal: .scale(scale: 1.3).combined(with: .opacity)
+                        ))
                 } else {
                     Image("ClaudeLogo")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 32, height: 32)
+                        .scaleEffect(1.0)
+                        .transition(.asymmetric(
+                            insertion: .scale(scale: 0.7).combined(with: .opacity),
+                            removal: .scale(scale: 1.3).combined(with: .opacity)
+                        ))
                 }
 
                 Text(viewModel.activeProvider?.name ?? "Default")
                     .font(.title2)
                     .fontWeight(.bold)
                     .foregroundStyle(.primary)
+                    .id(viewModel.activeProvider?.id.uuidString ?? "default") // Force view refresh for animation
+                    .transition(.asymmetric(
+                        insertion: .scale(scale: 0.8).combined(with: .opacity),
+                        removal: .scale(scale: 1.2).combined(with: .opacity)
+                    ))
             }
+            .animation(.spring(response: 0.6, dampingFraction: 0.7, blendDuration: 0.2), value: viewModel.activeProvider?.id)
 
             Spacer()
 

@@ -16,76 +16,145 @@ class ConfigImportService {
 
     private init() {}
 
-    func importExistingConfigurationIfNeeded() {
+    /// Sync configuration state when menu opens
+    /// Detects external config changes and updates activation state
+    /// - Returns: true if configuration changed
+    func syncConfigurationState() -> Bool {
         let currentEnv = configManager.getCurrentEnvVariables()
-        print("🔍 Current Claude Code env variables: \(currentEnv)")
+
+        guard let configToken = currentEnv["ANTHROPIC_AUTH_TOKEN"], !configToken.isEmpty else {
+            // No token in config - deactivate all providers if any are active
+            if providerStore.activeProvider != nil {
+                print("🔄 Config has no token, deactivating all providers")
+                providerStore.deactivateAllProviders()
+                return true
+            }
+            return false
+        }
+
+        // Check if config token matches active provider
+        let activeProviderID = providerStore.savedActiveProviderID
+        if !activeProviderID.isEmpty, let activeUUID = UUID(uuidString: activeProviderID) {
+            if let activeProvider = providerStore.providers.first(where: { $0.id == activeUUID }) {
+                let providerToken = activeProvider.envVariables["ANTHROPIC_AUTH_TOKEN"] ?? ""
+
+                if providerToken == configToken {
+                    // Config matches active provider
+                    return false
+                } else {
+                    print("⚠️ Config token changed externally")
+                }
+            }
+        }
+
+        // Config changed - find matching provider
+        for provider in providerStore.providers {
+            let providerToken = provider.envVariables["ANTHROPIC_AUTH_TOKEN"] ?? ""
+            if providerToken == configToken {
+                print("🔄 Activating provider based on config change: \(provider.name)")
+                providerStore.activateProvider(provider)
+                return true
+            }
+        }
+
+        // No matching provider - create new one (same as Phase 3 in startup)
+        let configBaseURL = currentEnv["ANTHROPIC_BASE_URL"] ?? ""
+        if !configBaseURL.isEmpty {
+            if let matchedTemplate = findMatchingTemplate(baseURL: configBaseURL, env: currentEnv) {
+                print("🔄 Creating provider from config change (template): \(matchedTemplate.name)")
+                let newProvider = Provider(name: matchedTemplate.name, envVariables: currentEnv, icon: matchedTemplate.icon)
+                providerStore.addProvider(newProvider)
+                providerStore.activateProvider(newProvider)
+                return true
+            } else {
+                print("🔄 Creating custom provider from config change")
+                let newProvider = Provider(name: "Other", envVariables: currentEnv, icon: "OtherLogo")
+                providerStore.addProvider(newProvider)
+                providerStore.activateProvider(newProvider)
+                return true
+            }
+        }
+
+        return false
+    }
+
+    /// Sync configuration on app startup
+    /// Three-phase validation:
+    /// 1. Check activeProviderID and validate token consistency
+    /// 2. If inconsistent, match token across all providers
+    /// 3. If no match, create new provider from template
+    func syncConfigurationOnStartup() {
+        let currentEnv = configManager.getCurrentEnvVariables()
+        configManager.debugPrintCurrentEnvVariables()
 
         // Check if we have any configuration
-        guard let baseURL = currentEnv["ANTHROPIC_BASE_URL"], !baseURL.isEmpty else {
-            print("❌ No existing Claude Code configuration found")
+        guard let configToken = currentEnv["ANTHROPIC_AUTH_TOKEN"], !configToken.isEmpty else {
+            print("❌ No auth token found in Claude Code configuration")
             return
         }
 
-        guard let authToken = currentEnv["ANTHROPIC_AUTH_TOKEN"], !authToken.isEmpty else {
-            print("❌ No auth token found in configuration")
-            return
-        }
-
+        let configBaseURL = currentEnv["ANTHROPIC_BASE_URL"] ?? ""
         print("✅ Found valid configuration")
-        print("📡 Base URL: \(baseURL)")
-        print("🔑 Auth Token: \(String(authToken.prefix(10)))...")
+        print("📡 Base URL: \(configBaseURL)")
+        print("🔑 Auth Token: \(String(repeating: "*", count: min(configToken.count, 20)))")
 
-        // Enhanced matching: check both URL and token validity
-        if let matchedTemplate = findMatchingTemplate(baseURL: baseURL, env: currentEnv) {
-            print("🎯 Matched template: \(matchedTemplate.name)")
+        // Phase 1: Check activeProviderID
+        let activeProviderID = providerStore.savedActiveProviderID
+        if !activeProviderID.isEmpty, let activeUUID = UUID(uuidString: activeProviderID) {
+            print("🔍 Phase 1: Checking activeProviderID: \(activeProviderID)")
 
-            // Check if we already have this provider
-            let existingProvider = providerStore.providers.first { provider in
-                provider.envVariables["ANTHROPIC_BASE_URL"] == baseURL &&
-                provider.envVariables["ANTHROPIC_AUTH_TOKEN"] == authToken
-            }
+            if let activeProvider = providerStore.providers.first(where: { $0.id == activeUUID }) {
+                let providerToken = activeProvider.envVariables["ANTHROPIC_AUTH_TOKEN"] ?? ""
 
-            if existingProvider == nil {
-                print("➕ Creating new provider from existing config")
-                var newProvider = Provider(name: matchedTemplate.name, envVariables: currentEnv, icon: matchedTemplate.icon)
-                newProvider.isActive = true
-
-                print("📝 New provider: name=\(newProvider.name), icon=\(newProvider.icon), active=\(newProvider.isActive)")
-
-                // Add to store (this will trigger UI update automatically)
-                providerStore.addProvider(newProvider)
-                print("✅ Auto-imported existing provider: \(matchedTemplate.name)")
-            } else {
-                print("ℹ️ Provider already exists and matches current config")
-                // Ensure existing provider is active
-                if let provider = existingProvider, !provider.isActive {
-                    providerStore.activateProvider(provider)
-                    print("🔄 Activated existing provider")
+                if providerToken == configToken {
+                    print("✅ Active provider matches config token")
+                    if !activeProvider.isActive {
+                        providerStore.activateProvider(activeProvider)
+                        print("🔄 Activated saved provider: \(activeProvider.name)")
+                    }
+                    return
+                } else {
+                    print("⚠️ Active provider token doesn't match config, proceeding to Phase 2")
                 }
+            } else {
+                print("⚠️ Active provider not found, proceeding to Phase 2")
             }
         } else {
-            print("❓ No template matched for baseURL: \(baseURL)")
+            print("🔍 No activeProviderID found, proceeding to Phase 2")
+        }
 
-            // Unknown provider - create with "Other" name
-            let existingProvider = providerStore.providers.first { provider in
-                provider.envVariables["ANTHROPIC_BASE_URL"] == baseURL &&
-                provider.envVariables["ANTHROPIC_AUTH_TOKEN"] == authToken
-            }
-
-            if existingProvider == nil {
-                print("➕ Creating unknown provider")
-                var newProvider = Provider(name: "Other", envVariables: currentEnv, icon: "OtherLogo")
-                newProvider.isActive = true
-
-                providerStore.addProvider(newProvider)
-                print("✅ Auto-imported unknown provider: \(baseURL)")
-            } else {
-                print("ℹ️ Unknown provider already exists")
-                if let provider = existingProvider, !provider.isActive {
+        // Phase 2: Match token across all providers
+        print("🔍 Phase 2: Matching token across all providers")
+        for provider in providerStore.providers {
+            let providerToken = provider.envVariables["ANTHROPIC_AUTH_TOKEN"] ?? ""
+            if providerToken == configToken {
+                print("✅ Found matching provider: \(provider.name)")
+                if !provider.isActive {
                     providerStore.activateProvider(provider)
-                    print("🔄 Activated existing unknown provider")
+                    print("🔄 Activated matching provider")
                 }
+                return
             }
+        }
+
+        // Phase 3: Create new provider from template or custom
+        print("🔍 Phase 3: No matching provider found, creating new provider")
+        if !configBaseURL.isEmpty {
+            if let matchedTemplate = findMatchingTemplate(baseURL: configBaseURL, env: currentEnv) {
+                print("🎯 Matched template: \(matchedTemplate.name)")
+                let newProvider = Provider(name: matchedTemplate.name, envVariables: currentEnv, icon: matchedTemplate.icon)
+                providerStore.addProvider(newProvider)
+                providerStore.activateProvider(newProvider)
+                print("✅ Created and activated provider from template: \(matchedTemplate.name)")
+            } else {
+                print("❓ No template matched, creating custom provider")
+                let newProvider = Provider(name: "Other", envVariables: currentEnv, icon: "OtherLogo")
+                providerStore.addProvider(newProvider)
+                providerStore.activateProvider(newProvider)
+                print("✅ Created and activated custom provider")
+            }
+        } else {
+            print("⚠️ No BASE_URL in config, cannot create provider")
         }
     }
 
@@ -96,6 +165,8 @@ class ConfigImportService {
         for template in ProviderTemplate.allTemplates {
             if let templateURL = template.envVariables["ANTHROPIC_BASE_URL"] {
                 print("📋 Template '\(template.name)' has URL: \(templateURL)")
+
+                // Try exact matching first
                 if templateURL == baseURL {
                     print("✅ URL matched!")
 
@@ -105,6 +176,37 @@ class ConfigImportService {
                         return template
                     } else {
                         print("⚠️ URL matched but configuration seems invalid for this template")
+                    }
+                }
+
+                // Try pattern matching for dynamic URLs (like StreamLake)
+                if templateURL.contains("ep-xxx-xxxxxxx") {
+                    print("🔍 Trying pattern matching for dynamic URL")
+
+                    // Replace dynamic endpoint ID in user's URL with placeholder
+                    let regex = try? NSRegularExpression(pattern: "ep-[a-z0-9-]+", options: [])
+                    let normalizedURL = regex?.stringByReplacingMatches(
+                        in: baseURL,
+                        options: [],
+                        range: NSRange(location: 0, length: baseURL.utf16.count),
+                        withTemplate: "ep-xxx-xxxxxxx"
+                    ) ?? baseURL
+
+                    print("🔄 Normalized URL: \(normalizedURL)")
+                    print("📝 Template URL: \(templateURL)")
+
+                    if normalizedURL == templateURL {
+                        print("✅ Pattern matched for dynamic URL!")
+
+                        // Additional validation
+                        if isValidProviderForTemplate(baseURL: baseURL, template: template, env: env) {
+                            print("🎯 Template and configuration validated!")
+                            return template
+                        } else {
+                            print("⚠️ Pattern matched but configuration seems invalid for this template")
+                        }
+                    } else {
+                        print("❌ Pattern did not match: \(normalizedURL) != \(templateURL)")
                     }
                 }
             }
@@ -126,6 +228,18 @@ class ConfigImportService {
 
             // Zhipu AI tokens are typically 32 chars + ".W7Gu3qS0k5isSImL" pattern
             return token.count >= 20
+        }
+
+        // For StreamLake, validate the URL pattern
+        if template.name == "StreamLake" {
+            // StreamLake should contain the specific base URL pattern
+            guard baseURL.contains("streamlakeapi.com") && baseURL.contains("claude-code-proxy") else {
+                return false
+            }
+
+            // Token should be present and reasonably long
+            guard let token = env["ANTHROPIC_AUTH_TOKEN"] else { return false }
+            return token.count >= 10
         }
 
         // For other future templates, add specific validation logic here

@@ -26,9 +26,9 @@ struct PrismApp: App {
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Import existing configuration on app launch
+        // Sync configuration on app startup
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            ConfigImportService.shared.importExistingConfigurationIfNeeded()
+            ConfigImportService.shared.syncConfigurationOnStartup()
         }
     }
 }
