@@ -57,7 +57,8 @@ struct AddEditProviderView: View {
                 
                 Spacer()
                 
-                Text(provider == nil ? "Add Provider" : "Edit Provider")
+                Text(provider == nil ?
+                     "Add Provider" : "Edit Provider")
                     .font(.headline)
                     .fontWeight(.semibold)
                 
@@ -127,8 +128,13 @@ struct AddEditProviderView: View {
                                 Label("Choose a template", systemImage: "checklist")
                                     .tag(nil as ProviderTemplate?)
                                 ForEach(ProviderTemplate.allTemplates, id: \.name) { template in
-                                    Text(template.name)
-                                        .tag(template as ProviderTemplate?)
+                                    HStack {
+                                        Image(template.icon)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 12, height: 12)
+                                        Text(template.name)
+                                    }.tag(template as ProviderTemplate?)
                                 }
                             }
                             .pickerStyle(.menu)
@@ -146,9 +152,9 @@ struct AddEditProviderView: View {
                     
                     // Provider Information
                     DetailTextFieldCardView(
-                        title: "Provider Name",
+                        title: LocalizedStringKey("Provider Name"),
                         systemImage: "person.text.rectangle",
-                        placeholder: "Enter provider name",
+                        placeholder: LocalizedStringKey("Enter provider name"),
                         value: $providerName
                     )
                     
@@ -156,17 +162,17 @@ struct AddEditProviderView: View {
                     ForEach(EnvKey.allCases) { envKey in
                         if envKey == .authToken {
                             DetailSecureFieldCardView(
-                                title: envKey.displayName,
+                                title: LocalizedStringKey(envKey.displayName),
                                 systemImage: envKey.systemImage,
-                                placeholder: envKey.placeholder,
+                                placeholder: LocalizedStringKey(envKey.placeholder),
                                 required: true,
                                 value: binding(for: envKey)
                             )
                         } else {
                             DetailTextFieldCardView(
-                                title: envKey.displayName,
+                                title: LocalizedStringKey(envKey.displayName),
                                 systemImage: envKey.systemImage,
-                                placeholder: envKey.placeholder,
+                                placeholder: LocalizedStringKey(envKey.placeholder),
                                 required: envKey == .baseURL,
                                 value: binding(for: envKey)
                             )

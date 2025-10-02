@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct DetailTextCardView: View {
-    
-    let title: String
+
+    let title: LocalizedStringKey
     let systemImage: String
     let value: String
     
@@ -24,7 +24,7 @@ struct DetailTextCardView: View {
                 if isCopied {
                     HStack(spacing: 4) {
                         Image(systemName: "checkmark.circle.fill")
-                        Text("Copied")
+                        Text("Copied", comment: "Status text shown when text is copied")
                     }
                     .font(.system(size: 8, weight: .bold))
                     .padding(2)
@@ -54,8 +54,8 @@ struct DetailTextCardView: View {
 }
 
 struct DetailTextCardView2: View {
-    
-    let title: String
+
+    let title: LocalizedStringKey
     let systemImage: String
     let value: String
     
@@ -70,7 +70,7 @@ struct DetailTextCardView2: View {
                 if isCopied {
                     HStack(spacing: 4) {
                         Image(systemName: "checkmark.circle.fill")
-                        Text("Copied")
+                        Text("Copied", comment: "Status text shown when text is copied")
                     }
                     .font(.system(size: 8, weight: .bold))
                     .padding(2)
@@ -110,14 +110,14 @@ struct DetailTextCardView2: View {
 }
 
 struct DetailTextFieldCardView: View {
-    
-    let title: String
+
+    let title: LocalizedStringKey
     let systemImage: String
-    var placeholder: String = ""
+    var placeholder: LocalizedStringKey = ""
     var required: Bool = false
     var isEditing: Bool = false
     var validation: (String) -> Bool = { _ in true }
-    var validationMessage: String = "Invalid input"
+    var validationMessage: LocalizedStringKey = "Invalid input"
     
     @Binding
     var value: String
@@ -146,7 +146,7 @@ struct DetailTextFieldCardView: View {
                     if isCopied {
                         HStack(spacing: 4) {
                             Image(systemName: "checkmark.circle.fill")
-                            Text("Copied")
+                            Text("Copied", comment: "Status text shown when text is copied")
                         }
                         .font(.system(size: 8, weight: .bold))
                         .padding(2)
@@ -158,7 +158,7 @@ struct DetailTextFieldCardView: View {
                             .fontWeight(.light)
                     }
                     if required && value.isEmpty {
-                        Text("*")
+                        Text("*", comment: "Required field indicator")
                             .font(.system(size: 12, weight: .heavy, design: .monospaced))
                             .foregroundStyle(.red)
                     }
@@ -210,10 +210,10 @@ struct DetailTextFieldCardView: View {
 }
 
 struct DetailSecureFieldCardView: View {
-    
-    let title: String
+
+    let title: LocalizedStringKey
     let systemImage: String
-    var placeholder: String = ""
+    var placeholder: LocalizedStringKey = ""
     var required: Bool = false
     var isEditing: Bool = false
     
@@ -234,7 +234,7 @@ struct DetailSecureFieldCardView: View {
                     Text(title)
                     Spacer()
                     if required {
-                        Text("*")
+                        Text("*", comment: "Required field indicator")
                             .font(.system(size: 12, weight: .heavy, design: .monospaced))
                             .foregroundStyle(.red)
                     }
@@ -247,7 +247,7 @@ struct DetailSecureFieldCardView: View {
                 if isCopied {
                     HStack(spacing: 4) {
                         Image(systemName: "checkmark.circle.fill")
-                        Text("Copied")
+                        Text("Copied", comment: "Status text shown when text is copied")
                     }
                     .font(.system(size: 8, weight: .bold))
                     .padding(2)
@@ -278,7 +278,7 @@ struct DetailSecureFieldCardView: View {
                         .font(.caption)
                         .textFieldStyle(.plain)
                 }
-                    
+
                 if !(value.isEmpty) {
                     Button(action: {
                         value = ""
@@ -312,16 +312,16 @@ struct DetailSecureFieldCardView: View {
 }
 
 struct DetailPickerCardView<SelectionValue, Content> : View where SelectionValue : Hashable, Content : View {
-    
-    let title: String
+
+    let title: LocalizedStringKey
     let systemImage: String
-    let emptyMessage: String = "No items"
+    let emptyMessage: LocalizedStringKey = "No items"
     var isEditing: Bool = false
     @Binding var isLoading: Bool
     @Binding var selection: SelectionValue
     let content: () -> Content
-    
-    init(_ titleKey: String,
+
+    init(_ titleKey: LocalizedStringKey,
          systemImage: String,
          isEditing: Bool = false,
          isLoading: Binding<Bool> = .constant(false),
@@ -364,8 +364,8 @@ struct DetailPickerCardView<SelectionValue, Content> : View where SelectionValue
 }
 
 struct DetailMetadataCardView: View {
-    
-    let title: String
+
+    let title: LocalizedStringKey
     let systemImage: String
     var value: [String: String]
     
@@ -379,7 +379,7 @@ struct DetailMetadataCardView: View {
             .foregroundStyle(.tertiary)
             
             if value.isEmpty {
-                Text("No metadata")
+                Text("No metadata", comment: "Empty metadata message")
                     .font(.caption)
             } else {
                 VStack(spacing: 4) {
@@ -387,7 +387,7 @@ struct DetailMetadataCardView: View {
                         HStack(spacing: 4) {
                             Text(key)
                                 .fontWeight(.bold)
-                            Text("→")
+                            Text("→", comment: "Arrow separator for key-value pairs")
                             Text(value)
                                 .fontWeight(.light)
                             Spacer()
@@ -414,8 +414,8 @@ struct MetadataItem: Identifiable, Equatable {
 }
 
 struct DetailMetadataEditorCardView: View {
-    
-    let title: String
+
+    let title: LocalizedStringKey
     let systemImage: String
     var isEditing: Bool = false
     
@@ -442,7 +442,7 @@ struct DetailMetadataEditorCardView: View {
                 if keyDuplicationError {
                     HStack(spacing: 4) {
                         Image(systemName: "exclamationmark.triangle.fill")
-                        Text("Key duplication(\(duplicateKey ?? "null"))")
+                        Text("Key duplication(\(duplicateKey ?? "null"))", comment: "Error message for duplicate key")
                     }
                     .fontWeight(.bold)
                     .foregroundStyle(.red)
@@ -475,7 +475,7 @@ struct DetailMetadataEditorCardView: View {
                                         .stroke(lineWidth: 2)
                                         .foregroundStyle(keyDuplicationError && duplicateKey == item.key ? Color.red : Color.clear)
                                 }
-                            Text("→")
+                            Text("→", comment: "Arrow separator for key-value pairs")
                             TextField("Value", text: $item.value)
                                 .fontWeight(.light)
                                 .padding(8)
@@ -536,8 +536,8 @@ struct DetailMetadataEditorCardView: View {
 }
 
 struct DetailSwitchCardView: View {
-    
-    let title: String
+
+    let title: LocalizedStringKey
     let systemImage: String
     var isEditing: Bool = false
     
@@ -564,8 +564,8 @@ struct DetailSwitchCardView: View {
 }
 
 struct DetailSwitchShowCardView: View {
-    
-    let title: String
+
+    let title: LocalizedStringKey
     let systemImage: String
     var value: Bool
     
@@ -586,8 +586,8 @@ struct DetailSwitchShowCardView: View {
 }
 
 struct DetailIntCardView: View {
-    
-    let title: String
+
+    let title: LocalizedStringKey
     let systemImage: String
     var value: Int?
     
@@ -600,7 +600,7 @@ struct DetailIntCardView: View {
             if let value = value {
                 Text("\(value)")
             } else {
-                Text("null")
+                Text("null", comment: "Null value display text")
             }
         }
         .font(.caption)
@@ -610,8 +610,8 @@ struct DetailIntCardView: View {
 }
 
 struct DetailIntStepperCardView: View {
-    
-    let title: String
+
+    let title: LocalizedStringKey
     let systemImage: String
     var isEditing: Bool = false
     
@@ -652,7 +652,7 @@ struct DetailIntStepperCardView: View {
                 }, label: {
                     HStack(spacing: 4) {
                         Image(systemName: "plus")
-                        Text("Set")
+                        Text("Set", comment: "Set button for optional fields")
                     }
                     .foregroundStyle(.primary)
                     .font(.caption)
@@ -671,8 +671,8 @@ struct DetailIntStepperCardView: View {
 }
 
 struct DetailNilCardView: View {
-    
-    let title: String
+
+    let title: LocalizedStringKey
     let systemImage: String
     var isEditing: Bool = false
     let action: () -> Void

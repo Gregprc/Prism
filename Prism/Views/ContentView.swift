@@ -98,11 +98,11 @@ struct ContentView: View {
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
 
-            Text("No API Providers")
+            Text("No API Providers", comment: "Empty state title")
                 .font(.headline)
                 .foregroundStyle(.secondary)
 
-            Text("Add your first API provider to get started")
+            Text("Add your first API provider to get started", comment: "Empty state message")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -146,7 +146,7 @@ struct ContentView: View {
     private var footerView: some View {
         HStack {
             Spacer()
-            Text("Prism v\(appVersion)")
+            Text("Prism v\(appVersion)", comment: "App version display format")
                 .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundStyle(.tertiary)
@@ -165,7 +165,7 @@ struct ContentView: View {
             .buttonStyle(.plain)
             .popover(isPresented: $showQuitAlert) {
                 VStack {
-                    Text("Quit Prism now?")
+                    Text("Quit Prism now?", comment: "Quit confirmation message")
                         .font(.caption)
                     
                     HStack(spacing: 12) {
@@ -281,11 +281,11 @@ struct DefaultProviderRowView: View {
                     .frame(width: 16, height: 16)
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Claude Default")
+                    Text("Claude Default", comment: "Default Claude provider name")
                         .font(.headline)
                         .fontWeight(.semibold)
 
-                    Text("Login with Claude (Console) account")
+                    Text("Login with Claude (Console) account", comment: "Description for default Claude provider")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .truncationMode(.middle)
@@ -318,11 +318,11 @@ struct DeleteConfirmationPopover: View {
     var body: some View {
         VStack(spacing: 16) {
             VStack(spacing: 8) {
-                Text("Delete Provider")
+                Text("Delete Provider", comment: "Delete confirmation dialog title")
                     .font(.headline)
                     .fontWeight(.semibold)
 
-                Text("Are you sure you want to delete \"\(providerName)\"? This action cannot be undone.")
+                Text("Are you sure you want to delete \"\(providerName)\"? This action cannot be undone.", comment: "Delete confirmation message")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
