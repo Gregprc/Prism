@@ -446,7 +446,7 @@
       }
     },
     "No conflict detected." : {
-
+      "comment" : "No token conflict message"
     },
     "No items" : {
       "comment" : "Empty picker message",
@@ -658,13 +658,13 @@
       }
     },
     "This token is already used by '%@' with a different URL. This might be intentional if you're using multiple endpoints with the same credentials." : {
-
+      "comment" : "Duplicate token with different URL message"
     },
     "This token is already used by '%@' with the same URL. Using the same token with identical configuration may cause conflicts." : {
-
+      "comment" : "Duplicate token with same URL message"
     },
     "Token Already in Use" : {
-
+      "comment" : "Duplicate token warning title"
     },
     "Value" : {
       "comment" : "Value field label for metadata",

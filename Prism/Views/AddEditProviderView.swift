@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppKit
 
 struct AddEditProviderView: View {
     let provider: Provider?
@@ -16,8 +17,6 @@ struct AddEditProviderView: View {
     @State private var providerName: String
     @State private var selectedTemplate: ProviderTemplate?
     @State private var envVariables: [String: String]
-    @State private var showDuplicateAlert = false
-    @State private var duplicateCheckResult: TokenCheckResult?
 
     private var isSaveDisabled: Bool {
         // Provider name is required
@@ -68,11 +67,10 @@ struct AddEditProviderView: View {
                 Button(action: {
                     onCancel()
                 }) {
-                    Image(systemName: "chevron.left")
+                    Image(systemName: "arrow.uturn.backward")
                         .font(.title2)
-                        .foregroundStyle(.secondary)
                 }
-                .buttonStyle(.borderless)
+                .buttonStyle(.plain)
                 
                 Spacer()
                 
@@ -96,9 +94,8 @@ struct AddEditProviderView: View {
                         // No duplicate, proceed with save
                         saveProvider()
                     case .duplicateWithSameURL, .duplicateWithDifferentURL:
-                        // Show alert
-                        duplicateCheckResult = checkResult
-                        showDuplicateAlert = true
+                        // Show NSAlert window
+                        showDuplicateAlertWindow(for: checkResult)
                     }
                 }, label: {
                     Label("Save", systemImage: "checkmark.circle.fill")
@@ -160,22 +157,29 @@ struct AddEditProviderView: View {
                 .padding(.bottom, 12)
             }
         }
-        .alert("Token Already in Use", isPresented: $showDuplicateAlert) {
-            Button("Cancel", role: .cancel) {}
-            Button("Save Anyway") {
-                saveProvider()
-            }
-        } message: {
-            if let result = duplicateCheckResult {
-                switch result {
-                case .duplicateWithSameURL(let provider):
-                    Text("This token is already used by '\(provider.name)' with the same URL. Using the same token with identical configuration may cause conflicts.")
-                case .duplicateWithDifferentURL(let provider):
-                    Text("This token is already used by '\(provider.name)' with a different URL. This might be intentional if you're using multiple endpoints with the same credentials.")
-                case .unique:
-                    Text("No conflict detected.")
-                }
-            }
+    }
+
+    private func showDuplicateAlertWindow(for result: TokenCheckResult) {
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = NSLocalizedString("Token Already in Use", comment: "")
+
+        switch result {
+        case .duplicateWithSameURL(let provider):
+            alert.informativeText = String(format: NSLocalizedString("This token is already used by '%@' with the same URL. Using the same token with identical configuration may cause conflicts.", comment: ""), provider.name)
+        case .duplicateWithDifferentURL(let provider):
+            alert.informativeText = String(format: NSLocalizedString("This token is already used by '%@' with a different URL. This might be intentional if you're using multiple endpoints with the same credentials.", comment: ""), provider.name)
+        case .unique:
+            alert.informativeText = NSLocalizedString("No conflict detected.", comment: "")
+        }
+
+        alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+        alert.addButton(withTitle: NSLocalizedString("Save Anyway", comment: ""))
+
+        let response = alert.runModal()
+        if response == .alertSecondButtonReturn {
+            // User clicked "Save Anyway"
+            saveProvider()
         }
     }
 

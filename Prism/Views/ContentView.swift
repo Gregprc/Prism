@@ -16,56 +16,54 @@ struct ContentView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            ZStack {
-                mainView
-                    .opacity(viewModel.currentView == .main ? 1 : 0)
-                    .scaleEffect(viewModel.currentView == .main ? 1 : 0.95)
-                    .animation(.easeInOut(duration: 0.3), value: viewModel.currentView)
+        ZStack {
+            mainView
+                .opacity(viewModel.currentView == .main ? 1 : 0)
+                .scaleEffect(viewModel.currentView == .main ? 1 : 0.95)
+                .animation(.easeInOut(duration: 0.3), value: viewModel.currentView)
 
-                if viewModel.currentView == .add {
-                    AddEditProviderView(
-                        provider: nil,
-                        onSave: { savedProvider in
-                            viewModel.addProvider(savedProvider)
-                            viewModel.backToMain()
-                        },
-                        onCancel: {
-                            viewModel.backToMain()
-                        },
-                        onCheckDuplicate: { token, baseURL, excludingID in
-                            viewModel.checkTokenDuplicate(token: token, baseURL: baseURL, excludingID: excludingID)
-                        }
-                    )
-                    .transition(.asymmetric(
-                        insertion: .move(edge: .trailing).combined(with: .opacity),
-                        removal: .move(edge: .trailing).combined(with: .opacity)
-                    ))
-                }
+            if viewModel.currentView == .add {
+                AddEditProviderView(
+                    provider: nil,
+                    onSave: { savedProvider in
+                        viewModel.addProvider(savedProvider)
+                        viewModel.backToMain()
+                    },
+                    onCancel: {
+                        viewModel.backToMain()
+                    },
+                    onCheckDuplicate: { token, baseURL, excludingID in
+                        viewModel.checkTokenDuplicate(token: token, baseURL: baseURL, excludingID: excludingID)
+                    }
+                )
+                .transition(.asymmetric(
+                    insertion: .move(edge: .trailing).combined(with: .opacity),
+                    removal: .move(edge: .trailing).combined(with: .opacity)
+                ))
+            }
 
-                if case .edit(let provider) = viewModel.currentView {
-                    AddEditProviderView(
-                        provider: provider,
-                        onSave: { savedProvider in
-                            viewModel.updateProvider(savedProvider)
-                            viewModel.backToMain()
-                        },
-                        onCancel: {
-                            viewModel.backToMain()
-                        },
-                        onCheckDuplicate: { token, baseURL, excludingID in
-                            viewModel.checkTokenDuplicate(token: token, baseURL: baseURL, excludingID: excludingID)
-                        }
-                    )
-                    .transition(.asymmetric(
-                        insertion: .move(edge: .trailing).combined(with: .opacity),
-                        removal: .move(edge: .trailing).combined(with: .opacity)
-                    ))
-                }
+            if case .edit(let provider) = viewModel.currentView {
+                AddEditProviderView(
+                    provider: provider,
+                    onSave: { savedProvider in
+                        viewModel.updateProvider(savedProvider)
+                        viewModel.backToMain()
+                    },
+                    onCancel: {
+                        viewModel.backToMain()
+                    },
+                    onCheckDuplicate: { token, baseURL, excludingID in
+                        viewModel.checkTokenDuplicate(token: token, baseURL: baseURL, excludingID: excludingID)
+                    }
+                )
+                .transition(.asymmetric(
+                    insertion: .move(edge: .trailing).combined(with: .opacity),
+                    removal: .move(edge: .trailing).combined(with: .opacity)
+                ))
             }
         }
         .background(.clear)
-        .frame(width: 360)
+        .frame(width: 360, height: 320)
         .animation(.easeInOut(duration: 0.35), value: viewModel.currentView)
         .onAppear {
             viewModel.syncConfigurationState()
@@ -75,10 +73,13 @@ struct ContentView: View {
     private var mainView: some View {
         VStack(spacing: 8) {
             headerView
+                .padding(.top, 12)
+                .padding(.horizontal, 12)
             providerListView
             footerView
+                .padding(.bottom, 12)
+                .padding(.horizontal, 12)
         }
-        .padding(12)
     }
 
     private var headerView: some View {
@@ -153,7 +154,7 @@ struct ContentView: View {
 
     private var providerListView: some View {
         ScrollView {
-            LazyVStack(spacing: 8) {
+            VStack(spacing: 8) {
                 // Default provider row
                 DefaultProviderRowView(
                     isActive: viewModel.isDefaultActive,
@@ -179,8 +180,8 @@ struct ContentView: View {
                     )
                 }
             }
+            .padding(.horizontal, 12)
         }
-        .frame(maxHeight: 320)
     }
 
     private var footerView: some View {
@@ -197,10 +198,9 @@ struct ContentView: View {
             Button(action: {
                 showQuitAlert = true
             }, label: {
-                Image(systemName: "xmark")
-                    .font(.caption)
+                Image(systemName: "power")
                     .padding(6)
-                    .background(cornerRadius: 8, fill: .background.opacity(0.8))
+                    .background(.background.opacity(0.001))
             })
             .buttonStyle(.plain)
             .popover(isPresented: $showQuitAlert) {
