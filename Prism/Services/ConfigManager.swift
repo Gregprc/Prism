@@ -59,7 +59,7 @@ class ConfigManager {
         }
     }
 
-    func updateEnvVariables(_ envVars: [String: EnvValue]) -> Bool {
+    func updateEnvVariables(_ envVars: [String: EnvValue], previousKeys: [String]) -> Bool {
         // Debug: Print what we're about to write
         print("🔧 Writing env variables to Claude config:")
         for (key, envValue) in envVars {
@@ -74,23 +74,14 @@ class ConfigManager {
         // Get existing env or create new one
         var existingEnv = (config["env"] as? [String: Any]) ?? [:]
 
-        // Define the keys we manage
-        let managedKeys: Set<String> = [
-            "ANTHROPIC_BASE_URL",
-            "ANTHROPIC_AUTH_TOKEN",
-            "ANTHROPIC_DEFAULT_HAIKU_MODEL",
-            "ANTHROPIC_DEFAULT_SONNET_MODEL",
-            "ANTHROPIC_DEFAULT_OPUS_MODEL",
-            "API_TIMEOUT_MS",
-            "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
-        ]
+        print("🧹 Clearing previous Prism-managed keys: \(previousKeys)")
 
-        // Remove our managed keys from existing env (we'll set them fresh)
-        for key in managedKeys {
+        // Remove all previously managed keys (includes base + custom vars from previous provider)
+        for key in previousKeys {
             existingEnv.removeValue(forKey: key)
         }
 
-        // Merge: keep non-managed env vars, add our managed ones with proper type conversion
+        // Add new environment variables with proper type conversion
         for (key, envValue) in envVars {
             switch envValue.type {
             case .string:
@@ -173,30 +164,19 @@ class ConfigManager {
         }
     }
 
-    func removeManagedEnvVariables() -> Bool {
+    func removeManagedEnvVariables(previousKeys: [String]) -> Bool {
         // Read existing config to preserve all fields
         var config = readConfig() ?? [:]
 
         // Get existing env or create new one
         var existingEnv = (config["env"] as? [String: Any]) ?? [:]
 
-        // Define the keys we manage
-        let managedKeys: Set<String> = [
-            "ANTHROPIC_BASE_URL",
-            "ANTHROPIC_AUTH_TOKEN",
-            "ANTHROPIC_DEFAULT_HAIKU_MODEL",
-            "ANTHROPIC_DEFAULT_SONNET_MODEL",
-            "ANTHROPIC_DEFAULT_OPUS_MODEL",
-            "API_TIMEOUT_MS",
-            "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
-        ]
+        print("🧹 Removing Prism-managed env variables: \(previousKeys)")
 
-        // Remove only our managed keys, keep others
-        for key in managedKeys {
+        // Remove all previously managed keys (includes base + custom vars from previous provider)
+        for key in previousKeys {
             existingEnv.removeValue(forKey: key)
         }
-
-        print("🧹 Removing managed env variables, keeping other env vars")
 
         // Update config with cleaned env
         config["env"] = existingEnv

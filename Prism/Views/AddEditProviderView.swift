@@ -17,6 +17,7 @@ struct AddEditProviderView: View {
     @State private var providerName: String
     @State private var selectedTemplate: ProviderTemplate?
     @State private var envVariables: [String: EnvValue]
+    @State private var baseTemplateKeys: Set<String>
     @State private var showingAddCustomVar = false
     @State private var newCustomKey = ""
     @State private var newCustomValue = ""
@@ -49,13 +50,16 @@ struct AddEditProviderView: View {
         print("🔧 AddEditProviderView init - provider: \(provider?.name ?? "nil")")
 
         if let provider = provider {
-            // Editing existing provider
+            // Editing existing provider - infer template from BASE_URL
+            let inferredTemplate = Self.inferTemplate(from: provider)
+            _baseTemplateKeys = State(initialValue: Set(inferredTemplate?.envVariables.keys ?? provider.envVariables.keys))
             _providerName = State(initialValue: provider.name)
             _envVariables = State(initialValue: provider.envVariables)
             _selectedTemplate = State(initialValue: nil)
         } else {
             // Adding new provider - use first template as default
             let firstTemplate = ProviderTemplate.allTemplates.first!
+            _baseTemplateKeys = State(initialValue: Set(firstTemplate.envVariables.keys))
             _providerName = State(initialValue: firstTemplate.name)
             _envVariables = State(initialValue: firstTemplate.envVariables)
             _selectedTemplate = State(initialValue: firstTemplate)
@@ -120,10 +124,26 @@ struct AddEditProviderView: View {
                             selection: $selectedTemplate,
                             templates: ProviderTemplate.allTemplates
                         )
-                        .onChange(of: selectedTemplate) { _, template in
-                            if let template = template {
-                                providerName = template.name
-                                envVariables = template.envVariables
+                        .onChange(of: selectedTemplate) { _, newTemplate in
+                            if let newTemplate = newTemplate {
+                                // Preserve custom variables (not in current template)
+                                let currentCustomVars = envVariables.filter { key, _ in
+                                    !baseTemplateKeys.contains(key)
+                                }
+
+                                // Start with new template's base variables
+                                var mergedVars = newTemplate.envVariables
+
+                                // Add back custom variables (template takes priority on conflicts)
+                                for (key, value) in currentCustomVars {
+                                    if mergedVars[key] == nil {
+                                        mergedVars[key] = value
+                                    }
+                                }
+
+                                providerName = newTemplate.name
+                                envVariables = mergedVars
+                                baseTemplateKeys = Set(newTemplate.envVariables.keys)
                             }
                         }
                     }
@@ -145,7 +165,7 @@ struct AddEditProviderView: View {
 
                     // Custom Environment Variables Section
                     if !customKeys.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
+                        VStack(alignment: .leading, spacing: 12) {
                             Text("Custom Variables")
                                 .font(.caption)
                                 .foregroundStyle(.tertiary)
@@ -204,13 +224,11 @@ struct AddEditProviderView: View {
     // MARK: - Helper Computed Properties
 
     private var templateKeys: [String] {
-        let allEnvKeys = Set(EnvKey.allCases.map { $0.rawValue })
-        return envVariables.keys.filter { allEnvKeys.contains($0) }.sorted()
+        return envVariables.keys.filter { baseTemplateKeys.contains($0) }.sorted()
     }
 
     private var customKeys: [String] {
-        let allEnvKeys = Set(EnvKey.allCases.map { $0.rawValue })
-        return envVariables.keys.filter { !allEnvKeys.contains($0) }.sorted()
+        return envVariables.keys.filter { !baseTemplateKeys.contains($0) }.sorted()
     }
 
     private func showDuplicateAlertWindow(for result: TokenCheckResult) {
@@ -347,8 +365,8 @@ struct AddEditProviderView: View {
                     HStack(spacing: 4) {
                         Image(systemName: "gearshape")
                         Text(key)
-                        
-                        Text(envValue.type.rawValue.capitalized)
+
+                        Text(LocalizedStringKey(envValue.type.displayName))
                             .font(.caption2)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
@@ -393,6 +411,15 @@ struct AddEditProviderView: View {
             }
             .padding(8)
             .background(cornerRadius: 12, strokeColor: .primary.opacity(0.08), fill: .background.opacity(0.6))
+        }
+    }
+
+    // MARK: - Template Inference
+
+    static func inferTemplate(from provider: Provider) -> ProviderTemplate? {
+        let baseURL = provider.envVariables["ANTHROPIC_BASE_URL"]?.value ?? ""
+        return ProviderTemplate.allTemplates.first { template in
+            template.envVariables["ANTHROPIC_BASE_URL"]?.value == baseURL
         }
     }
 }

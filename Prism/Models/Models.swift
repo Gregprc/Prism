@@ -11,6 +11,17 @@ enum EnvValueType: String, Codable {
     case string
     case integer
     case boolean
+
+    var displayName: String {
+        switch self {
+        case .string:
+            return "String"
+        case .integer:
+            return "Integer"
+        case .boolean:
+            return "Boolean"
+        }
+    }
 }
 
 struct EnvValue: Codable, Equatable, Hashable {
@@ -146,6 +157,16 @@ struct ProviderTemplate: Hashable, Equatable {
         icon: "DeepSeekLogo"
     )
     
+    static let packyCodeAI = ProviderTemplate(
+        name: String(localized: "PackyCode"),
+        envVariables: [
+            "ANTHROPIC_BASE_URL": EnvValue(value: "https://api.packycode.com", type: .string),
+            "ANTHROPIC_AUTH_TOKEN": EnvValue(value: "", type: .string),
+            "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": EnvValue(value: "1", type: .boolean)
+        ],
+        icon: "PackyCodeLogo"
+    )
+    
     static let otherAI = ProviderTemplate(
         name: String(localized: "Custom AI"),
         envVariables: [
@@ -164,6 +185,7 @@ struct ProviderTemplate: Hashable, Equatable {
         moonshotAI,
         streamLakeAI,
         deepSeekAI,
+        packyCodeAI,
         otherAI
     ]
 }

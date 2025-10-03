@@ -67,13 +67,17 @@ class ContentViewModel {
 
     // MARK: - Provider Actions
     func activateProvider(_ provider: Provider) {
+        // Get old managed keys BEFORE activating new provider
+        let oldManagedKeys = providerStore.activeManagedKeys
         providerStore.activateProvider(provider)
-        applyProviderToConfig(provider)
+        applyProviderToConfig(provider, previousKeys: oldManagedKeys)
     }
 
     func activateDefault() {
+        // Get old managed keys BEFORE deactivating
+        let oldManagedKeys = providerStore.activeManagedKeys
         providerStore.deactivateAllProviders()
-        clearManagedEnv()
+        clearManagedEnv(previousKeys: oldManagedKeys)
     }
 
     func addProvider(_ provider: Provider) {
@@ -84,13 +88,14 @@ class ContentViewModel {
     func updateProvider(_ provider: Provider) {
         // Check if this is the active provider before updating
         let wasActive = provider.isActive
+        let oldManagedKeys = providerStore.activeManagedKeys
 
         providerStore.updateProvider(provider)
 
         // If editing the currently active provider, sync changes to config file immediately
         if wasActive {
             print("📝 Updated active provider, syncing to config file")
-            applyProviderToConfig(provider)
+            applyProviderToConfig(provider, previousKeys: oldManagedKeys)
         }
     }
 
@@ -115,15 +120,15 @@ class ContentViewModel {
     }
 
     // MARK: - Private Helper Methods
-    private func applyProviderToConfig(_ provider: Provider) {
-        let success = configManager.updateEnvVariables(provider.envVariables)
+    private func applyProviderToConfig(_ provider: Provider, previousKeys: [String]) {
+        let success = configManager.updateEnvVariables(provider.envVariables, previousKeys: previousKeys)
         if !success {
             print("Failed to apply provider configuration")
         }
     }
 
-    private func clearManagedEnv() {
-        let success = configManager.removeManagedEnvVariables()
+    private func clearManagedEnv(previousKeys: [String]) {
+        let success = configManager.removeManagedEnvVariables(previousKeys: previousKeys)
         if !success {
             print("Failed to clear managed env variables")
         }

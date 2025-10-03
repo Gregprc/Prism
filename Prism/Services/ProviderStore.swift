@@ -50,6 +50,10 @@ class ProviderStore {
         activeProviderID
     }
 
+    var activeManagedKeys: [String] {
+        activeProvider?.envVariables.keys.map { $0 } ?? []
+    }
+
     static let shared = ProviderStore()
 
     private init() {
