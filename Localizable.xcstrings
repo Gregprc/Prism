@@ -168,6 +168,22 @@
         }
       }
     },
+    "Aliyuncs" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阿里云百炼"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阿里雲百煉"
+          }
+        }
+      }
+    },
     "API Timeout (ms)" : {
       "comment" : "API timeout field label",
       "extractionState" : "manual",
@@ -719,6 +735,22 @@
         }
       }
     },
+    "ModelScope" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "魔搭"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "魔搭"
+          }
+        }
+      }
+    },
     "Moonshot AI" : {
       "comment" : "Moonshot AI provider name",
       "localizations" : {
@@ -908,7 +940,20 @@
       }
     },
     "PackyCode" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PackyCode"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PackyCode"
+          }
+        }
+      }
     },
     "Permission Error" : {
       "comment" : "Error alert title",
@@ -1132,23 +1177,6 @@
         }
       }
     },
-    "StreamLake" : {
-      "comment" : "StreamLake provider name",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "StreamLake"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "StreamLake"
-          }
-        }
-      }
-    },
     "String" : {
       "comment" : "String type label",
       "localizations" : {
@@ -1315,6 +1343,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "值"
+          }
+        }
+      }
+    },
+    "Vanchin" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快手万擎"
+          }
+        },
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快手萬擎"
           }
         }
       }

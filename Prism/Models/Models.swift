@@ -131,8 +131,8 @@ struct ProviderTemplate: Hashable, Equatable {
         icon: "MoonshotLogo"
     )
     
-    static let streamLakeAI = ProviderTemplate(
-        name: String(localized: "StreamLake"),
+    static let VanchinAI = ProviderTemplate(
+        name: String(localized: "Vanchin"),
         envVariables: [
             "ANTHROPIC_BASE_URL": EnvValue(value: "", type: .string),
             "ANTHROPIC_AUTH_TOKEN": EnvValue(value: "", type: .string),
@@ -167,6 +167,30 @@ struct ProviderTemplate: Hashable, Equatable {
         icon: "PackyCodeLogo"
     )
     
+    static let aliyuncsAI = ProviderTemplate(
+        name: String(localized: "Aliyuncs"),
+        envVariables: [
+            "ANTHROPIC_BASE_URL": EnvValue(value: "https://dashscope.aliyuncs.com/apps/anthropic", type: .string),
+            "ANTHROPIC_AUTH_TOKEN": EnvValue(value: "", type: .string),
+            "ANTHROPIC_DEFAULT_HAIKU_MODEL": EnvValue(value: "qwen-flash", type: .string),
+            "ANTHROPIC_DEFAULT_SONNET_MODEL": EnvValue(value: "qwen-max", type: .string),
+            "ANTHROPIC_DEFAULT_OPUS_MODEL": EnvValue(value: "qwen-max", type: .string)
+        ],
+        icon: "AliyuncsLogo"
+    )
+    
+    static let modelScopeAI = ProviderTemplate(
+        name: String(localized: "ModelScope"),
+        envVariables: [
+            "ANTHROPIC_BASE_URL": EnvValue(value: "https://api-inference.modelscope.cn", type: .string),
+            "ANTHROPIC_AUTH_TOKEN": EnvValue(value: "", type: .string),
+            "ANTHROPIC_DEFAULT_HAIKU_MODEL": EnvValue(value: "Qwen/Qwen3-Coder-480B-A35B-Instruct", type: .string),
+            "ANTHROPIC_DEFAULT_SONNET_MODEL": EnvValue(value: "Qwen/Qwen3-Coder-480B-A35B-Instruct", type: .string),
+            "ANTHROPIC_DEFAULT_OPUS_MODEL": EnvValue(value: "deepseek-ai/DeepSeek-R1-0528", type: .string)
+        ],
+        icon: "ModelScopeLogo"
+    )
+    
     static let otherAI = ProviderTemplate(
         name: String(localized: "Custom AI"),
         envVariables: [
@@ -183,8 +207,10 @@ struct ProviderTemplate: Hashable, Equatable {
         zhipuAI,
         zai,
         moonshotAI,
-        streamLakeAI,
+        VanchinAI,
         deepSeekAI,
+        aliyuncsAI,
+        modelScopeAI,
         packyCodeAI,
         otherAI
     ]
