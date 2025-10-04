@@ -94,6 +94,7 @@ struct ProviderTemplate: Hashable, Equatable {
     let name: String
     let envVariables: [String: EnvValue]
     let icon: String
+    let docLink: String?
 
     static let zhipuAI = ProviderTemplate(
         name: String(localized: "Zhipu AI"),
@@ -104,7 +105,8 @@ struct ProviderTemplate: Hashable, Equatable {
             "ANTHROPIC_DEFAULT_SONNET_MODEL": EnvValue(value: "glm-4.6", type: .string),
             "ANTHROPIC_DEFAULT_OPUS_MODEL": EnvValue(value: "glm-4.6", type: .string)
         ],
-        icon: "ZhipuLogo"
+        icon: "ZhipuLogo",
+        docLink: String(localized: "Zhipu AI Doc Link", defaultValue: "https://docs.bigmodel.cn/cn/coding-plan/tool/claude")
     )
     
     static let zai = ProviderTemplate(
@@ -116,7 +118,8 @@ struct ProviderTemplate: Hashable, Equatable {
             "ANTHROPIC_DEFAULT_SONNET_MODEL": EnvValue(value: "glm-4.6", type: .string),
             "ANTHROPIC_DEFAULT_OPUS_MODEL": EnvValue(value: "glm-4.6", type: .string)
         ],
-        icon: "ZaiLogo"
+        icon: "ZaiLogo",
+        docLink: String(localized: "Z AI Doc Link", defaultValue: "https://docs.z.ai/devpack/tool/claude")
     )
     
     static let moonshotAI = ProviderTemplate(
@@ -128,21 +131,23 @@ struct ProviderTemplate: Hashable, Equatable {
             "ANTHROPIC_DEFAULT_SONNET_MODEL": EnvValue(value: "kimi-k2-turbo-preview", type: .string),
             "ANTHROPIC_DEFAULT_OPUS_MODEL": EnvValue(value: "kimi-k2-turbo-preview", type: .string)
         ],
-        icon: "MoonshotLogo"
+        icon: "MoonshotLogo",
+        docLink: String(localized: "Moonshot AI Doc Link", defaultValue: "https://platform.moonshot.cn/docs/guide/agent-support")
     )
-    
+
     static let VanchinAI = ProviderTemplate(
         name: String(localized: "Vanchin"),
         envVariables: [
-            "ANTHROPIC_BASE_URL": EnvValue(value: "", type: .string),
+            "ANTHROPIC_BASE_URL": EnvValue(value: "https://wanqing.streamlakeapi.com/api/gateway/v1/endpoints/xxx/claude-code-proxy", type: .string),
             "ANTHROPIC_AUTH_TOKEN": EnvValue(value: "", type: .string),
             "ANTHROPIC_DEFAULT_HAIKU_MODEL": EnvValue(value: "KAT-Coder", type: .string),
             "ANTHROPIC_DEFAULT_SONNET_MODEL": EnvValue(value: "KAT-Coder", type: .string),
             "ANTHROPIC_DEFAULT_OPUS_MODEL": EnvValue(value: "KAT-Coder", type: .string)
         ],
-        icon: "StreamLakeLogo"
+        icon: "StreamLakeLogo",
+        docLink: String(localized: "VanChin AI Doc Link", defaultValue: "https://www.streamlake.com/document/WANQING/me6ymdjrqv8lp4iq0o9")
     )
-    
+
     static let deepSeekAI = ProviderTemplate(
         name: String(localized: "DeepSeek"),
         envVariables: [
@@ -154,9 +159,10 @@ struct ProviderTemplate: Hashable, Equatable {
             "API_TIMEOUT_MS": EnvValue(value: "600000", type: .integer),
             "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": EnvValue(value: "1", type: .boolean)
         ],
-        icon: "DeepSeekLogo"
+        icon: "DeepSeekLogo",
+        docLink: String(localized: "DeepSeek Doc Link", defaultValue: "https://api-docs.deepseek.com/")
     )
-    
+
     static let packyCodeAI = ProviderTemplate(
         name: String(localized: "PackyCode"),
         envVariables: [
@@ -164,9 +170,10 @@ struct ProviderTemplate: Hashable, Equatable {
             "ANTHROPIC_AUTH_TOKEN": EnvValue(value: "", type: .string),
             "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": EnvValue(value: "1", type: .boolean)
         ],
-        icon: "PackyCodeLogo"
+        icon: "PackyCodeLogo",
+        docLink: String(localized: "PackyCode Doc Link", defaultValue: "https://www.packycode.com/docs")
     )
-    
+
     static let aliyuncsAI = ProviderTemplate(
         name: String(localized: "Aliyuncs"),
         envVariables: [
@@ -176,9 +183,10 @@ struct ProviderTemplate: Hashable, Equatable {
             "ANTHROPIC_DEFAULT_SONNET_MODEL": EnvValue(value: "qwen-max", type: .string),
             "ANTHROPIC_DEFAULT_OPUS_MODEL": EnvValue(value: "qwen-max", type: .string)
         ],
-        icon: "AliyuncsLogo"
+        icon: "AliyuncsLogo",
+        docLink: String(localized: "Aliyuncs Doc Link", defaultValue: "https://help.aliyun.com/zh/model-studio/developer-reference/use-qwen-by-calling-api")
     )
-    
+
     static let modelScopeAI = ProviderTemplate(
         name: String(localized: "ModelScope"),
         envVariables: [
@@ -188,9 +196,10 @@ struct ProviderTemplate: Hashable, Equatable {
             "ANTHROPIC_DEFAULT_SONNET_MODEL": EnvValue(value: "Qwen/Qwen3-Coder-480B-A35B-Instruct", type: .string),
             "ANTHROPIC_DEFAULT_OPUS_MODEL": EnvValue(value: "deepseek-ai/DeepSeek-R1-0528", type: .string)
         ],
-        icon: "ModelScopeLogo"
+        icon: "ModelScopeLogo",
+        docLink: String(localized: "ModelScope Doc Link", defaultValue: "https://modelscope.cn/docs/models/inference")
     )
-    
+
     static let otherAI = ProviderTemplate(
         name: String(localized: "Custom AI"),
         envVariables: [
@@ -200,7 +209,8 @@ struct ProviderTemplate: Hashable, Equatable {
             "ANTHROPIC_DEFAULT_SONNET_MODEL": EnvValue(value: "", type: .string),
             "ANTHROPIC_DEFAULT_OPUS_MODEL": EnvValue(value: "", type: .string)
         ],
-        icon: "OtherLogo"
+        icon: "OtherLogo",
+        docLink: nil
     )
 
     static let allTemplates: [ProviderTemplate] = [

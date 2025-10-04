@@ -8,12 +8,6 @@
             "state" : "translated",
             "value" : ""
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ""
-          }
         }
       }
     },
@@ -25,24 +19,12 @@
             "state" : "translated",
             "value" : "*"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "*"
-          }
         }
       }
     },
     "%lld" : {
       "localizations" : {
         "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld"
-          }
-        },
-        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld"
@@ -58,12 +40,6 @@
             "state" : "translated",
             "value" : "→"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "→"
-          }
         }
       }
     },
@@ -75,24 +51,12 @@
             "state" : "translated",
             "value" : "~/.claude/settings.json"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "~/.claude/settings.json"
-          }
         }
       }
     },
     "123" : {
       "localizations" : {
         "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "123"
-          }
-        },
-        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "123"
@@ -108,12 +72,6 @@
             "state" : "translated",
             "value" : "访问权限已授予！"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "存取權限已授予！"
-          }
         }
       }
     },
@@ -124,12 +82,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "添加自定义变量"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "新增自訂變數"
           }
         }
       }
@@ -142,12 +94,6 @@
             "state" : "translated",
             "value" : "添加 API 服务商"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "新增 API 服務商"
-          }
         }
       }
     },
@@ -159,12 +105,6 @@
             "state" : "translated",
             "value" : "添加您的第一个 API 服务商开始使用"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "新增您的第一個 API 服務商開始使用"
-          }
         }
       }
     },
@@ -175,11 +115,22 @@
             "state" : "translated",
             "value" : "阿里云百炼"
           }
-        },
-        "zh-HK" : {
+        }
+      }
+    },
+    "Aliyuncs Doc Link" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "阿里雲百煉"
+            "value" : "https://help.aliyun.com/zh/model-studio/claude-code"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://help.aliyun.com/zh/model-studio/claude-code"
           }
         }
       }
@@ -193,12 +144,6 @@
             "state" : "translated",
             "value" : "API 超时时间 (毫秒)"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API 逾時時間 (毫秒)"
-          }
         }
       }
     },
@@ -209,12 +154,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "确定要删除\"%@\"吗？此操作无法撤销。"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "確定要刪除「%@」嗎？此操作無法復原。"
           }
         }
       }
@@ -228,12 +167,6 @@
             "state" : "translated",
             "value" : "API 密钥"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API 密鑰"
-          }
         }
       }
     },
@@ -246,12 +179,6 @@
             "state" : "translated",
             "value" : "API 端点"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API 端點"
-          }
         }
       }
     },
@@ -263,12 +190,6 @@
             "state" : "translated",
             "value" : "布尔值"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "布林值"
-          }
         }
       }
     },
@@ -276,12 +197,6 @@
       "comment" : "Cancel button",
       "localizations" : {
         "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "取消"
-          }
-        },
-        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "取消"
@@ -297,12 +212,6 @@
             "state" : "translated",
             "value" : "Claude 默认"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claude 預設"
-          }
         }
       }
     },
@@ -313,12 +222,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "点击 \"授予访问权限\" 按钮"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "點擊 \"授予存取權限\" 按鈕"
           }
         }
       }
@@ -331,12 +234,6 @@
             "state" : "translated",
             "value" : "已复制"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已複製"
-          }
         }
       }
     },
@@ -347,12 +244,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自定义"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自訂"
           }
         }
       }
@@ -365,12 +256,6 @@
             "state" : "translated",
             "value" : "自定义变量"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自訂變數"
-          }
         }
       }
     },
@@ -381,12 +266,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自定义环境变量"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自訂環境變數"
           }
         }
       }
@@ -399,11 +278,22 @@
             "state" : "translated",
             "value" : "深度求索"
           }
-        },
-        "zh-HK" : {
+        }
+      }
+    },
+    "DeepSeek Doc Link" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "深度求索"
+            "value" : "https://api-docs.deepseek.com/zh-cn/guides/anthropic_api"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://api-docs.deepseek.com/zh-cn/guides/anthropic_api"
           }
         }
       }
@@ -416,12 +306,6 @@
             "state" : "translated",
             "value" : "删除"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除"
-          }
         }
       }
     },
@@ -432,12 +316,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "删除 API 服务商"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除 API 服務商"
           }
         }
       }
@@ -451,12 +329,6 @@
             "state" : "translated",
             "value" : "禁用非必要流量"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "停用非必要流量"
-          }
         }
       }
     },
@@ -467,12 +339,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "编辑 API 服务商"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "編輯 API 服務商"
           }
         }
       }
@@ -486,12 +352,6 @@
             "state" : "translated",
             "value" : "已启用"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已啟用"
-          }
         }
       }
     },
@@ -502,12 +362,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "输入 API 服务商名称"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輸入 API 服務商名稱"
           }
         }
       }
@@ -521,12 +375,6 @@
             "state" : "translated",
             "value" : "请输入 API 密钥"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請輸入 API 密鑰"
-          }
         }
       }
     },
@@ -537,12 +385,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无法保存目录访问权限"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無法儲存目錄存取權限"
           }
         }
       }
@@ -555,12 +397,6 @@
             "state" : "translated",
             "value" : "需要文件访问权限"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "需要檔案存取權限"
-          }
         }
       }
     },
@@ -571,12 +407,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "授予访问权限"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "授予存取權限"
           }
         }
       }
@@ -589,12 +419,6 @@
             "state" : "translated",
             "value" : "授予 .claude 目录访问权限"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "授予 .claude 目錄存取權限"
-          }
         }
       }
     },
@@ -606,12 +430,6 @@
             "state" : "translated",
             "value" : "正在授予访问权限..."
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "正在授予存取權限..."
-          }
         }
       }
     },
@@ -620,12 +438,6 @@
       "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Haiku 模型"
-          }
-        },
-        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Haiku 模型"
@@ -641,12 +453,6 @@
             "state" : "translated",
             "value" : "整数"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "整數"
-          }
         }
       }
     },
@@ -657,12 +463,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无效目录"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無效目錄"
           }
         }
       }
@@ -675,12 +475,6 @@
             "state" : "translated",
             "value" : "输入无效"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "輸入無效"
-          }
         }
       }
     },
@@ -691,12 +485,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "键"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "鍵"
           }
         }
       }
@@ -709,12 +497,6 @@
             "state" : "translated",
             "value" : "键重复（%@）"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "鍵重複（%@）"
-          }
         }
       }
     },
@@ -726,12 +508,6 @@
             "state" : "translated",
             "value" : "使用 Anthropic Claude 官方账户"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用 Anthropic Claude 官方帳戶"
-          }
         }
       }
     },
@@ -742,11 +518,22 @@
             "state" : "translated",
             "value" : "魔搭"
           }
-        },
-        "zh-HK" : {
+        }
+      }
+    },
+    "ModelScope Doc Link" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "魔搭"
+            "value" : "https://modelstudio.console.aliyun.com/?tab=doc#/doc/?type=model&url=2949529"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://modelstudio.console.aliyun.com/?tab=doc#/doc/?type=model&url=2949529"
           }
         }
       }
@@ -759,11 +546,22 @@
             "state" : "translated",
             "value" : "月之暗面"
           }
-        },
-        "zh-HK" : {
+        }
+      }
+    },
+    "Moonshot AI Doc Link" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "月之暗面"
+            "value" : "https://platform.moonshot.cn/docs/guide/agent-support"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://platform.moonshot.cn/docs/guide/agent-support"
           }
         }
       }
@@ -776,12 +574,6 @@
             "state" : "translated",
             "value" : "必须是有效的整数"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "必須是有效的整數"
-          }
         }
       }
     },
@@ -793,12 +585,6 @@
             "state" : "translated",
             "value" : "导航到 ~/.claude 目录"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "導航到 ~/.claude 目錄"
-          }
         }
       }
     },
@@ -806,12 +592,6 @@
       "comment" : "No button",
       "localizations" : {
         "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "否"
-          }
-        },
-        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "否"
@@ -827,12 +607,6 @@
             "state" : "translated",
             "value" : "暂无 API 服务商"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暫無 API 服務商"
-          }
         }
       }
     },
@@ -843,12 +617,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未检测到冲突"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "未檢測到衝突"
           }
         }
       }
@@ -861,12 +629,6 @@
             "state" : "translated",
             "value" : "暂无选项"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暫無選項"
-          }
         }
       }
     },
@@ -877,12 +639,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无元数据"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無中繼資料"
           }
         }
       }
@@ -895,12 +651,6 @@
             "state" : "translated",
             "value" : "空"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "空"
-          }
         }
       }
     },
@@ -908,12 +658,6 @@
       "comment" : "OK button",
       "localizations" : {
         "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "好"
-          }
-        },
-        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "好"
@@ -930,12 +674,6 @@
             "state" : "translated",
             "value" : "Opus 模型"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Opus 模型"
-          }
         }
       }
     },
@@ -946,11 +684,22 @@
             "state" : "translated",
             "value" : "PackyCode"
           }
+        }
+      }
+    },
+    "PackyCode Doc Link" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "https://www.packycode.com/docs"
+          }
         },
-        "zh-HK" : {
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PackyCode"
+            "value" : "https://www.packycode.com/docs"
           }
         }
       }
@@ -963,12 +712,6 @@
             "state" : "translated",
             "value" : "权限错误"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "權限錯誤"
-          }
         }
       }
     },
@@ -980,12 +723,6 @@
             "state" : "translated",
             "value" : "请选择 .claude 目录"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請選擇 .claude 目錄"
-          }
         }
       }
     },
@@ -993,12 +730,6 @@
       "comment" : "App name",
       "localizations" : {
         "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prism"
-          }
-        },
-        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prism"
@@ -1014,12 +745,6 @@
             "state" : "translated",
             "value" : "Prism 需要访问 Claude Code 配置目录："
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prism 需要存取 Claude Code 設定目錄："
-          }
         }
       }
     },
@@ -1031,12 +756,6 @@
             "state" : "translated",
             "value" : "Prism 需要访问 Claude Code 配置文件："
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prism 需要存取 Claude Code 設定檔案："
-          }
         }
       }
     },
@@ -1044,12 +763,6 @@
       "comment" : "App version display format",
       "localizations" : {
         "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prism v%@"
-          }
-        },
-        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prism v%@"
@@ -1065,12 +778,6 @@
             "state" : "translated",
             "value" : "API 服务商名称"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API 服務商名稱"
-          }
         }
       }
     },
@@ -1081,12 +788,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "现在退出 Prism？"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "現在退出 Prism？"
           }
         }
       }
@@ -1099,12 +800,6 @@
             "state" : "translated",
             "value" : "保存"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "儲存"
-          }
         }
       }
     },
@@ -1115,12 +810,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "仍然保存"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "仍然儲存"
           }
         }
       }
@@ -1133,12 +822,6 @@
             "state" : "translated",
             "value" : "选择 .claude 目录"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇 .claude 目錄"
-          }
         }
       }
     },
@@ -1150,12 +833,6 @@
             "state" : "translated",
             "value" : "设置"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定"
-          }
         }
       }
     },
@@ -1164,12 +841,6 @@
       "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sonnet 模型"
-          }
-        },
-        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sonnet 模型"
@@ -1185,12 +856,6 @@
             "state" : "translated",
             "value" : "字符串"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "字串"
-          }
         }
       }
     },
@@ -1198,12 +863,6 @@
       "comment" : "Success status message",
       "localizations" : {
         "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "成功！"
-          }
-        },
-        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "成功！"
@@ -1219,12 +878,6 @@
             "state" : "translated",
             "value" : "窗口即将关闭"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "視窗即將關閉"
-          }
         }
       }
     },
@@ -1235,12 +888,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "这样 Prism 就可以为您切换 API 服务商。"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "這樣 Prism 就可以為您切換 API 服務商。"
           }
         }
       }
@@ -1253,12 +900,6 @@
             "state" : "translated",
             "value" : "API 密钥已被使用"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API 密鑰已被使用"
-          }
         }
       }
     },
@@ -1269,12 +910,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "API 密钥已被「%@」使用（不同端点）"
-          }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API 密鑰已被「%@」使用（不同端點）"
           }
         }
       }
@@ -1287,12 +922,6 @@
             "state" : "translated",
             "value" : "API 密钥已被「%@」使用（相同端点）"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "API 密鑰已被「%@」使用（相同端點）"
-          }
         }
       }
     },
@@ -1304,12 +933,6 @@
             "state" : "translated",
             "value" : "类型"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "類型"
-          }
         }
       }
     },
@@ -1317,12 +940,6 @@
       "comment" : "Value placeholder (lowercase)",
       "localizations" : {
         "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "值"
-          }
-        },
-        "zh-HK" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "值"
@@ -1338,12 +955,6 @@
             "state" : "translated",
             "value" : "值"
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "值"
-          }
         }
       }
     },
@@ -1354,11 +965,32 @@
             "state" : "translated",
             "value" : "快手万擎"
           }
+        }
+      }
+    },
+    "VanChin AI Doc Link" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "https://www.streamlake.com/document/WANQING/me6ymdjrqv8lp4iq0o9"
+          }
         },
-        "zh-HK" : {
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "快手萬擎"
+            "value" : "https://www.streamlake.com/document/WANQING/me6ymdjrqv8lp4iq0o9"
+          }
+        }
+      }
+    },
+    "View Documentation" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看文档"
           }
         }
       }
@@ -1371,12 +1003,6 @@
             "state" : "translated",
             "value" : "接下来会发生什么："
           }
-        },
-        "zh-HK" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "接下來會發生什麼："
-          }
         }
       }
     },
@@ -1388,11 +1014,22 @@
             "state" : "translated",
             "value" : "是"
           }
+        }
+      }
+    },
+    "Z AI Doc Link" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "https://docs.z.ai/devpack/tool/claude"
+          }
         },
-        "zh-HK" : {
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "是"
+            "value" : "https://docs.z.ai/devpack/tool/claude"
           }
         }
       }
@@ -1405,11 +1042,22 @@
             "state" : "translated",
             "value" : "智谱 AI"
           }
-        },
-        "zh-HK" : {
+        }
+      }
+    },
+    "Zhipu AI Doc Link" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "智譜 AI"
+            "value" : "https://docs.bigmodel.cn/cn/coding-plan/tool/claude"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://docs.bigmodel.cn/cn/coding-plan/tool/claude"
           }
         }
       }

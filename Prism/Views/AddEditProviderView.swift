@@ -18,6 +18,7 @@ struct AddEditProviderView: View {
     @State private var selectedTemplate: ProviderTemplate?
     @State private var envVariables: [String: EnvValue]
     @State private var baseTemplateKeys: Set<String>
+    @State private var templateDocLink: String?
     @State private var showingAddCustomVar = false
     @State private var newCustomKey = ""
     @State private var newCustomValue = ""
@@ -53,6 +54,7 @@ struct AddEditProviderView: View {
             // Editing existing provider - infer template from BASE_URL
             let inferredTemplate = Self.inferTemplate(from: provider)
             _baseTemplateKeys = State(initialValue: Set(inferredTemplate?.envVariables.keys ?? provider.envVariables.keys))
+            _templateDocLink = State(initialValue: inferredTemplate?.docLink)
             _providerName = State(initialValue: provider.name)
             _envVariables = State(initialValue: provider.envVariables)
             _selectedTemplate = State(initialValue: nil)
@@ -60,6 +62,7 @@ struct AddEditProviderView: View {
             // Adding new provider - use first template as default
             let firstTemplate = ProviderTemplate.allTemplates.first!
             _baseTemplateKeys = State(initialValue: Set(firstTemplate.envVariables.keys))
+            _templateDocLink = State(initialValue: firstTemplate.docLink)
             _providerName = State(initialValue: firstTemplate.name)
             _envVariables = State(initialValue: firstTemplate.envVariables)
             _selectedTemplate = State(initialValue: firstTemplate)
@@ -75,7 +78,7 @@ struct AddEditProviderView: View {
                 Button(action: {
                     onCancel()
                 }) {
-                    Image(systemName: "arrow.uturn.backward")
+                    Image(systemName: "chevron.backward")
                         .font(.title2)
                 }
                 .buttonStyle(.plain)
@@ -144,8 +147,44 @@ struct AddEditProviderView: View {
                                 providerName = newTemplate.name
                                 envVariables = mergedVars
                                 baseTemplateKeys = Set(newTemplate.envVariables.keys)
+                                templateDocLink = newTemplate.docLink
                             }
                         }
+                    }
+
+                    // Documentation Link (if available)
+                    if let docLink = templateDocLink {
+                        Button(action: {
+                            if let url = URL(string: docLink) {
+                                NSWorkspace.shared.open(url)
+                            }
+                        }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "book.fill")
+                                    .font(.caption)
+                                Text("View Documentation")
+                                    .font(.caption)
+                                Spacer()
+                                Image(systemName: "arrow.up.right")
+                                    .font(.caption2)
+                            }
+                            .foregroundStyle(
+                                LinearGradient(colors: [Color(hex: "#55AAEF") ?? .blue, .blue], startPoint: .top, endPoint: .bottom)
+                            )
+                            .padding(8)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(.blue.opacity(0.08))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .strokeBorder(
+                                        .blue.opacity(0.2),
+                                        lineWidth: 1
+                                    )
+                            )
+                        }
+                        .buttonStyle(.plain)
                     }
 
                     // Provider Information
@@ -417,9 +456,21 @@ struct AddEditProviderView: View {
     // MARK: - Template Inference
 
     static func inferTemplate(from provider: Provider) -> ProviderTemplate? {
-        let baseURL = provider.envVariables["ANTHROPIC_BASE_URL"]?.value ?? ""
+        guard let providerURLString = provider.envVariables["ANTHROPIC_BASE_URL"]?.value,
+              !providerURLString.isEmpty,
+              let providerURL = URL(string: providerURLString),
+              let providerHost = providerURL.host else {
+            return nil
+        }
+
         return ProviderTemplate.allTemplates.first { template in
-            template.envVariables["ANTHROPIC_BASE_URL"]?.value == baseURL
+            guard let templateURLString = template.envVariables["ANTHROPIC_BASE_URL"]?.value,
+                  !templateURLString.isEmpty,
+                  let templateURL = URL(string: templateURLString),
+                  let templateHost = templateURL.host else {
+                return false
+            }
+            return providerHost == templateHost
         }
     }
 }
