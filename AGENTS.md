@@ -24,3 +24,7 @@ PRs must explain the change, cite manual/automated tests, link issues, and inclu
 
 ## Security & Configuration Tips
 Never manipulate `.claude/settings.json` directly; go through `SandboxAccessManager.withSecureAccess` to keep security-scoped bookmarks valid. If you must reset permissions, call `SandboxAccessManager.clearBookmark()` and re-request access via the permission window. Treat tokens as secrets—mask them in logs and avoid checking real values into fixtures.
+
+## Other
+
+Communicate with user by Chinese, but code / comments in English.

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppKit
 import Sparkle
 
 @main
@@ -14,13 +15,9 @@ struct PrismApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
-        MenuBarExtra(
-            "Prism",
-            systemImage: "rectangle.2.swap"
-        ) {
-            ContentView()
+        Settings {
+            EmptyView()
         }
-        .menuBarExtraStyle(.window)
     }
 }
 
@@ -31,6 +28,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                                                          userDriverDelegate: nil)
     
     func applicationDidFinishLaunching(_ notification: Notification) {
+        NSApplication.shared.setActivationPolicy(.accessory)
+        StatusBarController.shared.setup()
         
         UpdaterViewModel.shared.updaterController = updaterController
         // 可选：启动一次后台检查
