@@ -21,13 +21,14 @@ struct PrismApp: App {
     }
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate {
-    
-    let updaterController = SPUStandardUpdaterController(startingUpdater: true,
-                                                         updaterDelegate: nil,
-                                                         userDriverDelegate: nil)
+class AppDelegate: NSObject, NSApplicationDelegate, SPUUpdaterDelegate {
     
     func applicationDidFinishLaunching(_ notification: Notification) {
+        
+        let updaterController = SPUStandardUpdaterController(startingUpdater: true,
+                                                             updaterDelegate: self,
+                                                             userDriverDelegate: nil)
+        
         NSApplication.shared.setActivationPolicy(.accessory)
         StatusBarController.shared.setup()
         
